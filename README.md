@@ -49,6 +49,15 @@ to teplace the sexp-script.
 
 - Bootstrap. write the Typhon compiler in python.
 
+## Contributing
+
+Typhon is on its early days, so if you want to help, just ask,
+and I'll give you commit bit.
+
+We need a logo, but i'm really bad at design stuff, so if you
+have designing skills, I'd been thinking a cool logo for
+Thyphon could be a tornado of two or three little python snakes :)
+
 ## About Typhon
 
   The name was choosen as a funny anagram of 'Python'.
