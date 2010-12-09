@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """Python AST pretty-printer.
 
 This module exports a function that can be used to print a human-readable
