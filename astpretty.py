@@ -51,6 +51,10 @@ def rec_node(node, level, indent, write):
 def leaf(node):
     if None == node:
         return 'nil'
+    if isinstance(node, tuple):
+        return '[:tuple, ' + ', '.join(leaf(child) for child in node) + ']'
+    if isinstance(node, list):
+        return '[:list, ' + ', '.join(leaf(child) for child in node) + ']'
     return repr(node)
 
 def main():
