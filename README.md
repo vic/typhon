@@ -23,9 +23,9 @@ Maybe Rubinius VM does what Parrot was originally intended to.
 ## Try it
 
      # Set rubinius as your current ruby.
-     $ rvm use rbx 
+     $ rvm use rbx
      # Compile the hello world example
-     $ rbx rbx/compiler.rb examples/hello.py 
+     $ rbx rbx/compiler.rb examples/hello.py
 
 ## Status
 
@@ -41,10 +41,30 @@ Here's the plan as its currently in my head:
 - Have a script to use Python compiler module and let it
  produce a sexp made of Ruby literals.
 
+  DONE.
+
+  bin/pyparse.py takes a Python script and outputs the AST as
+  an array of ruby literals. The table of nodes and its attributes
+  are read from bin/node.py. The output is just a sexp.
+
 - Read this sexp from Ruby and build an AST in Ruby land.
+
+  DONE.
+
+  rbx/ast/node.rb Typhon::AST.from_sexp takes the sexp and just
+  creates a tree of Python AST nodes in Ruby land. The table of
+  nodes is the same pyparse.py uses, bin/node.py
+
 
 - Write the Typhon compiler in Ruby, taking advantage of
  Rubinius' compiler infrastructure.
+
+  IN PROGRESS.
+
+  We have Rubinius compiler stages at rbx/compiler/stages.rb
+  Currently the parsing stage simply uses pyparse.py and
+  evals the resulting sexp to later convert it to actual AST
+  node instances.
 
 - Have the Typhon compiler produce Rubinius bytecode.
 
@@ -69,7 +89,7 @@ Thyphon could be a tornado of two or three little Python snakes :)
 
   The name was choosen as a funny anagram of Python.
 
-  Also Typhon seems to be a weird looking creature: 
+  Also Typhon seems to be a weird looking creature:
   [http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm)
 
 
