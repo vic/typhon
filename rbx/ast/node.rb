@@ -16,9 +16,54 @@ class Typhon
     end
 
     class Node < Rubinius::AST::Node
-      def self.name(name)
-        Nodes[name] = self
+      def self.node(name, *attributes)
+        Nodes[name.to_s.to_sym] = self
+        unless attributes.empty?
+          names = attributes.map { |a| a.to_s.sub(/^_/, '') }
+          attrs = names.map { |a| '@' + a }
+          args  = attributes.map { |a| a.to_s.sub(/^_/, '*') }
+
+          attr_accessor *names
+
+          module_eval <<-INIT
+          def initialize(#{args.join(', ')})
+            #{attrs.join(', ')} = #{names.join(', ')}
+          end
+          INIT
+        end
       end
+    end
+
+    class Module < Node
+      node :Module, :line, :docstr, :body
+    end
+
+    class Stmt < Node
+      node :Stmt, :line, :_statements
+    end
+
+    class Printnl < Node
+      node :Printnl, :line, :expr, :out
+    end
+
+    class Const < Node
+      node :Const, :line, :value
+    end
+
+    class Discard < Node
+      node :Discard, :line, :expr
+    end
+
+    class Dict < Node
+      node :Dict, :line, :_items
+    end
+
+    class List < Node
+      node :List, :line, :_items
+    end
+
+    class Tuple < Node
+      node :Tuple, :line, :_items
     end
 
   end
