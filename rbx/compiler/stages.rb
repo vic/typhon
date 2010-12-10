@@ -80,7 +80,7 @@ class Typhon
 
       def run
         cmd = ['python']
-        cmd << File.expand_path('../../bin/astpretty.py', File.dirname(__FILE__))
+        cmd << File.expand_path('../../bin/pyparse.py', File.dirname(__FILE__))
         cmd << @filename
         stdio = Open3.popen3(*cmd)
         raise stdio[2].read unless stdio[2].eof? # has something in stderr
