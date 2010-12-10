@@ -20,6 +20,13 @@ Maybe Rubinius VM does what parrot was originally intended to.
   - rubinius head
   - rake
 
+## Try it
+
+   # Set rubinius as your current ruby.
+   $ rvm use rbx 
+   # Compile the hello world example
+   $ rbx rbx/compiler.rb examples/hello.py 
+
 ## Status
 
   Im in search of a nice python parser that can be implemented
