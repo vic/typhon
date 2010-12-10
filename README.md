@@ -8,11 +8,18 @@ Why?
 
 Just For Fun!.
 
+Python is one of the most popular dynamic languagues out there,
+it has many projects made on it and has an outstanding number of
+libraries available. 
+So I guess having an implementation for it on Rubinius would make
+Rubinius an strong player on VM field.
+
 Also, the Rubinius VM is a very neat piece of software, and all
 the cool kids are using it to implement other languages besides
 ruby.
 
 Maybe Rubinius VM does what Parrot was originally intended to.
+( Running many dynamic languages )
 
 ## Requirements
 
