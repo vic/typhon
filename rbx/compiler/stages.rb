@@ -16,7 +16,7 @@ class Typhon
 
       def run
         @output = Typhon::AST.from_sexp(@input)
-        p @ouput
+        p @output
       end
     end
 

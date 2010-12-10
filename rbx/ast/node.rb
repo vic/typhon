@@ -11,8 +11,7 @@ class Typhon
       type = Nodes[name]
       raise "Unknown sexp type: #{name}" unless type
       body = rest.map { |e| if e.kind_of?(Array) then from_sexp(e) else e end }
-      line = 0
-      ast = type.new(line, *body)
+      ast = type.new(*body)
       ast
     end
 
