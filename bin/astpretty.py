@@ -26,6 +26,10 @@ def rec_node(node, level, indent, write):
         write(pfx)
         write('[')
         write(':' + node.__class__.__name__)
+        if node.lineno:
+            write(', ' + str(node.lineno))
+        else:
+            write(', nil')
 
         if node.getChildren():
             write(', ')
