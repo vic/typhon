@@ -4,7 +4,7 @@ class Typhon
     Nodes = Hash.new
 
     # Converts a ruby sexp (array literals) into Typhon AST
-    def self.build(sexp)
+    def self.from_sexp(sexp)
       return nil if sexp.nil? || sexp.empty?
       name = sexp.first
       rest = sexp[1..-1]

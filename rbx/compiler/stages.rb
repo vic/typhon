@@ -15,7 +15,7 @@ class Typhon
       end
 
       def run
-        @output = Typhon::AST.build(@input)
+        @output = Typhon::AST.from_sexp(@input)
         p @ouput
       end
     end
