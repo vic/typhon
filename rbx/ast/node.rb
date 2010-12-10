@@ -15,56 +15,41 @@ class Typhon
       ast
     end
 
-    class Node < Rubinius::AST::Node
-      def self.node(name, *attributes)
-        Nodes[name.to_s.to_sym] = self
-        unless attributes.empty?
-          names = attributes.map { |a| a.to_s.sub(/^_/, '') }
-          attrs = names.map { |a| '@' + a }
-          args  = attributes.map { |a| a.to_s.sub(/^_/, '*') }
+    def self.node(name, *attributes)
+      cls = Class.new(Node)
+      self.const_set(name, cls)
+      Nodes[name.to_s.to_sym] = cls
+      attributes = [:line] + attributes
+      names = attributes.map { |a| a.to_s.sub(/^_/, '') }
+      attrs = names.map { |a| '@' + a }
+      args  = attributes.map { |a| a.to_s.sub(/^_/, '*') }
 
-          attr_accessor *names
-
-          module_eval <<-INIT
-          def initialize(#{args.join(', ')})
-            #{attrs.join(', ')} = #{names.join(', ')}
-          end
-          INIT
+      cls.attr_accessor *names
+      cls.module_eval <<-INIT
+        def initialize(#{args.join(', ')})
+          #{attrs.join(', ')} = #{names.join(', ')}
         end
-      end
+      INIT
     end
 
-    class Module < Node
-      node :Module, :line, :docstr, :body
+    class Node < Rubinius::AST::Node
     end
 
-    class Stmt < Node
-      node :Stmt, :line, :_statements
-    end
+    node :Module,    :docstr, :body
 
-    class Printnl < Node
-      node :Printnl, :line, :expr, :out
-    end
+    node :Stmt,      :_statements
 
-    class Const < Node
-      node :Const, :line, :value
-    end
+    node :Printnl,   :expr, :out
 
-    class Discard < Node
-      node :Discard, :line, :expr
-    end
+    node :Const,     :value
 
-    class Dict < Node
-      node :Dict, :line, :_items
-    end
+    node :Discard,   :expr
 
-    class List < Node
-      node :List, :line, :_items
-    end
+    node :Dict,      :_items
 
-    class Tuple < Node
-      node :Tuple, :line, :_items
-    end
+    node :List,      :_items
+
+    node :Tuple,     :_items
 
   end
 end
