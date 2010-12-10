@@ -1,85 +1,66 @@
-#!/usr/bin/env python
-"""Python AST pretty-printer.
+"""Python AST printer.
 
-This module exports a function that can be used to print a human-readable
-version of the AST.
+This file prints a python source AST as an array of ruby literals.
 
+Based on astpretty.py by Martin Blais <blais@firius.ca>
 Modified by Victor Hugo Borja <vic.borja@gmail.com> to produce ruby compatible sexp.
 """
-__author__ = 'Martin Blais <blais@furius.ca>'
 
-import sys
+import compiler, traceback, sys
 from compiler.ast import Node
+from os.path import dirname, join
 
-__all__ = ('printAst',)
+alist = join(dirname(__file__), "node.py")
+alist = eval( open(alist).read() )
 
+nodes = dict(alist)
 
-def printAst(ast, indent='  ', stream=sys.stdout, initlevel=0):
-    "Pretty-print an AST to the given output stream."
-    rec_node(ast, initlevel, indent, stream.write)
-    stream.write('\n')
-
-def rec_node(node, level, indent, write):
-    "Recurse through a node, pretty-printing it."
-    pfx = indent * level
+def rec_node(node, write):
     if isinstance(node, Node):
-        write(pfx)
+        name = node.__class__.__name__
         write('[')
-        write(':' + node.__class__.__name__)
+        write(':' + name)
         if node.lineno:
-            write(', ' + str(node.lineno))
+            write(',' + str(node.lineno))
         else:
-            write(', nil')
+            write(',nil')
 
         if node.getChildren():
-            write(', ')
+            write(',')
 
-        if any(isinstance(child, Node) for child in node.getChildren()):
-            for i, child in enumerate(node.getChildren()):
-                if i != 0:
-                    write(',')
-                write('\n')
-                rec_node(child, level+1, indent, write)
-            write('\n')
-            write(pfx)
-        else:
-            # None of the children as nodes, simply join their repr on a single
-            # line.
-            write(', '.join(leaf(child) for child in node.getChildren()))
+        for i, attr in enumerate(nodes[name]):
+            if i != 0:
+                write(',')
+            child = getattr(node, attr)
+            rec_node(child, write)
 
         write(']')
-
+    elif None == node:
+      write("nil")
+    elif isinstance(node, list) or isinstance(node, tuple):
+      write('[')
+      for i, child in enumerate(node):
+          if i != 0:
+              write(',')
+          rec_node(child, write)
+      write(']')
     else:
-        write(pfx)
-        write(leaf(node))
-
-def leaf(node):
-    if None == node:
-        return 'nil'
-    if isinstance(node, tuple):
-        return '[:tuple, ' + ', '.join(leaf(child) for child in node) + ']'
-    if isinstance(node, list):
-        return '[:list, ' + ', '.join(leaf(child) for child in node) + ']'
-    return repr(node)
+      write(repr(node))
 
 def main():
     import optparse
-    parser = optparse.OptionParser(__doc__.strip())
-    opts, args = parser.parse_args()
-
-    import compiler, traceback
-
+    oparse = optparse.OptionParser(__doc__.strip())
+    opts, args = oparse.parse_args()
     try:
         if args:
             ast = compiler.parseFile(args[0])
         else:
             ast = compiler.parse(sys.stdin.read())
-        printAst(ast, initlevel=0)
+        rec_node(ast, sys.stdout.write)
+        sys.stdout.write('\n')
     except SyntaxError, e:
         traceback.print_exc()
         sys.exit(1)
 
 if __name__ == '__main__':
     main()
-
-
