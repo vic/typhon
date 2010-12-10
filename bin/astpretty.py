@@ -25,8 +25,7 @@ def rec_node(node, write):
         else:
             write(',nil')
 
-        if node.getChildren():
-            write(',')
+        write(',')
 
         for i, attr in enumerate(nodes[name]):
             if i != 0:
