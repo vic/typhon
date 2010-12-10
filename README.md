@@ -22,10 +22,10 @@ Maybe Rubinius VM does what parrot was originally intended to.
 
 ## Try it
 
-   # Set rubinius as your current ruby.
-   $ rvm use rbx 
-   # Compile the hello world example
-   $ rbx rbx/compiler.rb examples/hello.py 
+     # Set rubinius as your current ruby.
+     $ rvm use rbx 
+     # Compile the hello world example
+     $ rbx rbx/compiler.rb examples/hello.py 
 
 ## Status
 
