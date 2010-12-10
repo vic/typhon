@@ -85,8 +85,14 @@ to teplace the sexp-script.
 
 ## Contributing
 
-Typhon is on its early days, so if you want to help, just ask,
-and I'll give you commit bit.
+Main repository is located at [http://github.com/vic/typhon](http://github.com/vic/typhon)
+report any issues you find there. 
+
+If more people gets interested we might start a mailing-list and freenode channel.
+
+Typhon is on its early days, if you want to help, you're more than welcome.
+We follow the same commit bit policy than Rubinius and Pugs, if you get your first patch 
+accepted you get commit bit.
 
 We need a logo, but i'm really bad at design stuff, so if you
 have designing skills, I'd been thinking a cool logo for
