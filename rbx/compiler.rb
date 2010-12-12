@@ -1,10 +1,10 @@
-base = File.dirname __FILE__
+base = File.dirname(__FILE__) + '/compiler/'
 
-require base + '/compiler/compiler'
-require base + '/compiler/stages'
-require base + '/ast'
+require base + 'compiler'
+require base + 'stages'
+require base + '../ast'
 
 if __FILE__ == $0
-  require base + '/compiler/command'
+  require base + 'command'
   Typhon::Compiler::Command.run ARGV
 end

@@ -1,5 +1,5 @@
-base = File.dirname __FILE__
+base = File.dirname(__FILE__) + '/ast/'
 
-require base + '/ast/node'
-require base + '/ast/module'
+require base + 'node'
+require base + 'module'
 
