@@ -23,7 +23,7 @@ def rec_node(node, write):
         if node.lineno:
             write(',' + str(node.lineno))
         else:
-            write(',nil')
+            write(',0')
 
         write(',')
 
