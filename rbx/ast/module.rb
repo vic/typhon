@@ -3,10 +3,10 @@ class Typhon
     class Module
 
       def bytecode(g)
-        @line ||= 0
         pos(g)
-      end
 
+        #node.nodes.each { |n| n.bytecode(g) }
+      end
     end
   end
 end

@@ -32,6 +32,7 @@ class Typhon
       cls.attr_accessor *names
       cls.module_eval <<-INIT
         def initialize(#{names.join(', ')})
+          line ||= 0
           #{attrs.join(', ')} = #{names.join(', ')}
         end
       INIT

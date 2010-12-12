@@ -25,7 +25,6 @@ class Typhon
       def run
         root = @root.new @input
         root.file = @compiler.parser.filename
-        p root
 
         @output = Rubinius::Generator.new
         root.variable_scope = @variable_scope
