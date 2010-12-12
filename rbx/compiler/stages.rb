@@ -1,22 +1,55 @@
 require 'open3'
+require 'pp'
 
 class Typhon
   class Stage
 
 
-    # This stage takes a ruby array as produced by bin/astpretty.py
-    # and produces a tree of Typhon::AST nodes.
-    class PyAST < Rubinius::Compiler::Stage
+    # This stage takes a tree of Typhon::AST nodes and
+    # simply calls the bytecode method on them.
+    class Generator < Rubinius::Compiler::Stage
       next_stage Rubinius::Compiler::Encoder
+      attr_accessor :variable_scope
 
       def initialize(compiler, last)
         super
-        compiler.parser = self
+        @compiler = compiler
+        @variable_scope = nil
+        compiler.generator = self
+      end
+
+      def root(root)
+        @root = root
+      end
+
+      def run
+        root = @root.new @input
+        root.file = @compiler.parser.filename
+        p root
+
+        @output = Rubinius::Generator.new
+        root.variable_scope = @variable_scope
+        root.bytecode @output
+        @output.close
+        run_next
+      end
+
+    end
+
+    # This stage takes a ruby array as produced by bin/astpretty.py
+    # and produces a tree of Typhon::AST nodes.
+    class PyAST < Rubinius::Compiler::Stage
+      next_stage Generator
+
+      def initialize(compiler, last)
+        @compiler = compiler
+        super
       end
 
       def run
         @output = Typhon::AST.from_sexp(@input)
-        p @output
+        pp(@output) if @compiler.parser.print?
+        run_next
       end
     end
 
@@ -28,10 +61,15 @@ class Typhon
 
       stage :typhon_code
       next_stage PyAST
+      attr_reader :filename, :line
 
       def initialize(compiler, last)
         super
         compiler.parser = self
+      end
+
+      def print?
+        @print
       end
 
       def print
@@ -46,11 +84,11 @@ class Typhon
 
       def run
         cmd = ['python']
-        cmd << File.expand_path('../../bin/astpretty.py', File.dirname(__FILE__))
+        cmd << File.expand_path('../../bin/pyparse.py', File.dirname(__FILE__))
         stdio = Open3.popen3(*cmd) { |stdin| stdin.puts @code }
         raise stdio[2].read unless stdio[2].eof? # has something in stderr
         @output = eval stdio[1].read
-        p @output if @print
+        pp(@output) if @print
         run_next
       end
     end
@@ -63,10 +101,15 @@ class Typhon
 
       stage :typhon_file
       next_stage PyAST
+      attr_reader :filename, :line
 
       def initialize(compiler, last)
         super
         compiler.parser = self
+      end
+
+      def print?
+        @print
       end
 
       def print
@@ -85,7 +128,7 @@ class Typhon
         stdio = Open3.popen3(*cmd)
         raise stdio[2].read unless stdio[2].eof? # has something in stderr
         @output = eval stdio[1].read
-        p @output if @print
+        pp(@output) if @print
         run_next
       end
     end

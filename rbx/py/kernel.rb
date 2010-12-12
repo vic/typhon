@@ -7,8 +7,18 @@ class Typhon
     # have this builtin functions available regardless of their class.
     module Kernel
 
+      include self
+
       def id
         object_id
+      end
+
+      def str(object)
+        "" + object.py_str
+      end
+
+      def print(object, dest = STDOUT)
+        dest.puts str(object)
       end
 
     end

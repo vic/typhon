@@ -39,6 +39,9 @@ class Typhon
 
     # Base Node class.
     class Node < Rubinius::AST::Node
+      def bytecode(g)
+        raise "Not implemented #{self}"
+      end
     end
 
     # Nodes classes. Read from node.py
