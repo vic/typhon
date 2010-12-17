@@ -1,0 +1,4 @@
+#!/usr/bin/env rbx
+
+require File.expand_path('../rbx/main', File.dirname(__FILE__))
+
