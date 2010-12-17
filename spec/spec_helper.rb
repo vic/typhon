@@ -1,1 +1,1 @@
-require File.expand_path("../../rbx/parser", __FILE__)
+require File.expand_path("../../lib/typhon/parser", __FILE__)

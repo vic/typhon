@@ -1,4 +1,3 @@
-require 'open3'
 require 'pp'
 
 class Typhon
@@ -82,11 +81,7 @@ class Typhon
       end
 
       def run
-        cmd = ['python']
-        cmd << File.expand_path('../../bin/pyparse.py', File.dirname(__FILE__))
-        stdio = Open3.popen3(*cmd) { |stdin| stdin.puts @code }
-        raise stdio[2].read unless stdio[2].eof? # has something in stderr
-        @output = eval stdio[1].read
+        @output = Parser.new.parse(@code)
         pp(@output) if @print
         run_next
       end
@@ -121,12 +116,7 @@ class Typhon
       end
 
       def run
-        cmd = ['python']
-        cmd << File.expand_path('../../bin/pyparse.py', File.dirname(__FILE__))
-        cmd << @filename
-        stdio = Open3.popen3(*cmd)
-        raise stdio[2].read unless stdio[2].eof? # has something in stderr
-        @output = eval stdio[1].read
+        @output = Parser.new.parse(File.read(@filename))
         pp(@output) if @print
         run_next
       end

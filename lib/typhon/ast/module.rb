@@ -5,7 +5,7 @@ class Typhon
       def bytecode(g)
         pos(g)
 
-        #node.nodes.each { |n| n.bytecode(g) }
+        node.nodes.each { |n| n.bytecode(g) }
       end
     end
   end

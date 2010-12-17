@@ -7,7 +7,7 @@ class Typhon
     # have this builtin functions available regardless of their class.
     module Kernel
 
-      include self
+      extend self
 
       def id
         object_id

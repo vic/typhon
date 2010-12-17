@@ -15,7 +15,7 @@ end
 task :build
 
 spec = Gem::Specification.new do |s|
-  require File.expand_path('../rbx/version', __FILE__)
+  require File.expand_path('../lib/typhon/version', __FILE__)
 
   s.name                      = "typhon"
   s.version                   = Typhon::VERSION.to_s
