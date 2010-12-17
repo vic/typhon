@@ -1,4 +1,6 @@
 require 'pp'
+require 'typhon/parser'
+require 'typhon/ast'
 
 class Typhon
   class Stage

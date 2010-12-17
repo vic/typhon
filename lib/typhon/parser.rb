@@ -6,10 +6,13 @@ class Typhon
 
     def parse(code)
       cmd = ['python']
-      cmd << File.expand_path('../../bin/pyparse.py', __FILE__)
-      stdio = Open3.popen3(*cmd) { |stdin| stdin.puts code }
-      raise Error, stdio[2].read unless stdio[2].eof? # has something in stderr
-      eval stdio[1].read
+      cmd << File.expand_path('../../../bin/pyparse.py', __FILE__)
+      stdio = Open3.popen3(*cmd) { |stdin, stdout, stderr| 
+        stdin.puts code 
+        stdin.close
+        #raise Error, stderr.read unless stderr.eof? # has something in stderr
+        eval stdout.read
+      }
     end
   end
 end

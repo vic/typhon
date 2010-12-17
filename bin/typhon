@@ -1,4 +1,7 @@
 #!/usr/bin/env rbx
+$LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
 
-require File.expand_path('../rbx/main', File.dirname(__FILE__))
+require 'typhon/compiler'
+
+Typhon::Compiler::Command.run ARGV
 
