@@ -96,7 +96,7 @@ accepted you get commit bit.
 
 We need a logo, but i'm really bad at design stuff, so if you
 have designing skills, I'd been thinking a cool logo for
-Thyphon could be a tornado of two or three little Python snakes :)
+Typhon could be a tornado of two or three little Python snakes :)
 
 ## About Typhon
 
