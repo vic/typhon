@@ -145,19 +145,24 @@ module Typhon
     end
     
     class ModuleNode < ClosedScope
+      attr_reader :parent #always nil for now.
+      
       def bytecode(g)
         pos(g)
         
-        g.push_rubinius
+        g.push_const(:PythonModule)
         # TODO: later this needs to take into account how the code was included
         # In ruby the module name is internal to the system, but in python it comes
         # from the import declaration that included it.
-        g.push_literal :'Py__main__' 
-        g.push_scope
-        g.send :open_module, 2
+        g.push_literal(nil)
+        g.push_literal('__main__')
+        g.push_literal(@doc)
+        g.send(:new, 3)
         
         @body = ModuleBody.new(@node, @line)
         attach_and_call(g, :__module_init__, true)
+        
+        g.ret # Actually want to return the module object to the enclosing scope.
       end
     end
     
@@ -172,6 +177,8 @@ module Typhon
     
     class FunctionNode < ClosedScope
       include Compiler::LocalVariables
+      
+      attr_reader :parent
       
       class Arguments
         attr_reader :argnames, :defaults
@@ -219,10 +226,13 @@ module Typhon
       end
       
       def compile_body(g)
-        meth = new_generator(g, @name.to_sym, @arguments)
-
+        meth = new_block_generator(g, @arguments)
+        
+        state = g.state
+        @parent = state.scope
         meth.push_state self
-        meth.state.push_super self
+        meth.state.push_super state.super
+        meth.state.push_eval state.eval
 #        meth.definition_line(@line)
 
         meth.state.push_name @name.to_sym
@@ -247,16 +257,16 @@ module Typhon
         
         @arguments = Arguments.new(@argnames,@defaults)
         
-        g.push_rubinius
+        g.push_self
         g.push_literal @name.to_sym
-        g.push_generator compile_body(g)
-        g.push_scope
+        g.create_block compile_body(g)
+        g.allow_private
+        g.send_with_block(:__define_method__, 1)
+
         # to add an actual method to a class, it actually goes like:
         #g.push_variables
         #g.send :method_visibility, 0
         #g.send :add_defn_method, 4
-        g.push_self
-        g.send :attach_method, 4
       end
     end
     
@@ -273,13 +283,69 @@ module Typhon
       end
     end
     
-    class NameNode < Node
-      def bytecode(g)
-        pos(g)
-        ref = g.state.scope.variables[name.to_sym].reference
-        g.push_local ref.slot
+    class VarNode < Node
+      # Finds a normal variable, doesn't go into BuiltIn, though.
+      def find_normal_var(g, name)
+        name = name.to_sym
+        scope = g.state.scope
+        # First try to find it in a function scope.
+        scope_depth = 0
+        while (scope.kind_of?(FunctionNode) || scope.kind_of?(ModuleNode))
+          puts(">>>", scope_depth, scope, "<<<")
+          var = scope.variables[name]
+          if (var)
+            yield var.reference, scope_depth
+            return
+          end
+          scope_depth += 1
+          scope = scope.parent
+          puts("===", scope, "===")
+        end
+        # TODO: Then look in module scope.
       end
     end
+    
+    class NameNode < VarNode
+      def bytecode(g)
+        pos(g)
+        puts(@name)
+        find_normal_var(g, @name) do |ref, depth|
+          if (depth > 0)
+            g.push_local_depth(depth, ref.slot)
+          else
+            g.push_local(ref.slot)
+          end
+          return
+        end
+        
+        # TODO: Figure out Builtins.
+        raise SyntaxError, "BOOM"
+      end
+    end
+    
+    class AssignNode < VarNode
+      def bytecode(g)
+        pos(g)
+
+        # no matter what, we want the RHS on the stack.
+        @expr.bytecode(g)
+
+        # TODO: This is completely biased towards single assignment. Everything
+        # else will probably fail spectacularly.
+        name = @nodes[0].name.to_sym
+
+        find_normal_var(g, name) do |ref, depth|
+          if (depth > 0)
+            g.set_local_depth(depth, ref.slot)
+          else
+            g.set_local(ref.slot)
+          end
+          return
+        end
+        # if we're here we didn't find anywhere to set it, so create it.
+        g.set_local(g.state.scope.new_local(name).reference.slot)
+      end
+    end   
     
     # Nodes classes. Read from node.py
     nodes = eval File.read(File.expand_path("../../../bin/node.py", File.dirname(__FILE__)))
