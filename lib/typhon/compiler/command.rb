@@ -1,6 +1,6 @@
-require 'optparse'
+require 'typhon/environment'
 
-class Typhon
+module Typhon
   class Compiler
 
     class Command

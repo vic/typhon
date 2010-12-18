@@ -2,7 +2,7 @@ require 'pp'
 require 'typhon/parser'
 require 'typhon/ast'
 
-class Typhon
+module Typhon
   class Stage
 
 

@@ -1,4 +1,4 @@
-class Typhon
+module Typhon
   class AST
 
     Nodes = Hash.new

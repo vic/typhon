@@ -1,4 +1,4 @@
-class Typhon
+module Typhon
 
   class Compiler < Rubinius::Compiler
     def self.compiled_filename(filename)

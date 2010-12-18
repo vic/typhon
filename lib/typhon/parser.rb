@@ -1,6 +1,6 @@
 require 'open3'
 
-class Typhon
+module Typhon
   class Parser
     class Error < StandardError; end
 

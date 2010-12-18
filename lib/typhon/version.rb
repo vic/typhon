@@ -1,4 +1,4 @@
-class Typhon
+module Typhon
   class VERSION < Struct.new(:major, :minor, :patch, :commit)
    def to_s
     [major, minor, patch].join(".")
