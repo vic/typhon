@@ -116,12 +116,11 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        g.push_cpath_top
-        g.find_const :STDOUT
+        g.push_self
         @nodes.each do |node|
           node.bytecode(g)
         end
-        g.send :puts, @nodes.count
+        g.send :__print__, @nodes.count
       end
     end
     
