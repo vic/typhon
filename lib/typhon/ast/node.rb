@@ -192,14 +192,18 @@ module Typhon
         end
         
         def default_names
-          @argnames[-defaults.count..-1]
+          if (defaults.count > 0)
+            @argnames[-defaults.count..-1]
+          else
+            []
+          end
         end
         
         def bytecode(g)
           @argnames.each do |arg|
             g.state.scope.new_local(arg.to_sym)
           end
-          
+
           default_names.each_with_index do |name, i|
             done = g.new_label
             
