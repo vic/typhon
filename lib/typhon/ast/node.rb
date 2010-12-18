@@ -28,7 +28,7 @@ module Typhon
         cls = self.const_get(name_sym)
       rescue NameError
       end
-      cls = cls || ::Class.new(Node)
+      cls = cls || ::Class.new(BlowUpNode)
       
       self.const_set(name_sym, cls)
       Nodes[name_sym] = cls
@@ -45,6 +45,13 @@ module Typhon
 
     Node = Rubinius::AST::Node
     ClosedScope = Rubinius::AST::ClosedScope
+    
+    class BlowUpNode < Node
+      def bytecode(g)
+        pos(g)
+        raise "Unimplemented bytecode for #{self.class}!"
+      end
+    end
 
     class DiscardNode < Node
       def bytecode(g)
