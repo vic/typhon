@@ -106,14 +106,18 @@ module Typhon
         g.pop # clear the array off the stack.
       end
     end
-
-    class FunctionNode < ClosedScope
+    
+    class ExecutableNode < ClosedScope
       include Compiler::LocalVariables
-
+      
       attr_reader :parent
-
-      def compile_body(g)
-        meth = new_generator(g, @name.to_sym, @arguments)
+      
+      def compile_body(g, auto_return = false)
+        if (@name)
+          meth = new_generator(g, @name.to_sym, @arguments)
+        else
+          meth = new_block_generator(g, @arguments)
+        end
 
         state = g.state
         @parent = state.scope
@@ -122,23 +126,36 @@ module Typhon
         meth.state.push_eval state.eval
   #        meth.definition_line(@line)
 
-        meth.state.push_name @name.to_sym
+        if (@name)
+          meth.state.push_name @name.to_sym
+        end
 
         @arguments.bytecode(meth)
         @code.bytecode(meth)
 
-        meth.state.pop_name
+        if (@name)
+          meth.state.pop_name
+        end
 
         meth.local_count = local_count
         meth.local_names = local_names
 
-        meth.ret
+        if (auto_return)
+          meth.ret
+        else
+          meth.pop
+          meth.push_nil
+          meth.ret
+        end
+
         meth.close
         meth.pop_state
 
         return meth
       end
-
+    end
+      
+    class FunctionNode < ExecutableNode 
       def bytecode(g)
         pos(g)
         
@@ -148,43 +165,87 @@ module Typhon
           
           g.push_rubinius
           g.push_literal(@name.to_sym)
-          g.push_generator(compile_body(g))
+          g.push_generator(compile_body(g, false))
           g.push_scope
           g.push_self
           g.send(:attach_method, 4)          
           
         when FunctionNode 
-          # This is a closure function. Note, it's still
-          # wrong since it binds the function to the enclosing scope (self).
-          # Also note that python functions only close over locals and don't
-          # have anywhere near the same kind of control over their enclosing
-          # scope (ie. can't return from parent).
-          @arguments = BlockArguments.new(@argnames,@defaults)
+          @arguments = BlockArguments.new(@argnames, @defaults)
 
-          g.push_self
-          g.push_literal @name.to_sym
-          g.create_block compile_body(g)
-          g.allow_private
-          g.send_with_block(:__define_method__, 1)
+          g.create_block(compile_body(g, false))
+          g.set_local(g.state.scope.new_local(@name.to_sym).reference.slot)
+          g.pop # set_local doesn't remove it from the stack.
         end
-
-        # to add an actual method to a class, it actually goes like:
-        #g.push_variables
-        #g.send :method_visibility, 0
-        #g.send :add_defn_method, 4
+      end
+    end
+    
+    class LambdaNode < ExecutableNode
+      def bytecode(g)
+        pos(g)
+        
+        @arguments = BlockArguments.new(@argnames, @defaults)
+        
+        g.create_block(compile_body(g, true))
+      end
+    end
+    
+    class ReturnNode < Node
+      def bytecode(g)
+        if (@value)
+          @value.bytecode(g)
+          g.ret
+        else
+          g.push_nil
+          g.ret
+        end
       end
     end
 
     class CallFuncNode < Node
+      # Finds a normal variable within function scope
+      def find_variable(g, name)
+        name = name.to_sym
+        scope = g.state.scope
+        # First try to find it in a function scope.
+        scope_depth = 0
+        while (scope.kind_of?(FunctionNode))
+          var = scope.variables[name]
+          if (var)
+            yield var.reference, scope_depth
+            return
+          end
+          scope_depth += 1
+          scope = scope.parent
+        end
+      end
+
       def bytecode(g)
         pos(g)
 
+        # first look for a local variable that matches in
+        # the scope chain.
+        find_variable(g, @node.name.to_sym) do |ref, depth|
+          if (depth > 0)
+            g.push_local_depth(depth, ref.slot)
+          else
+            g.push_local(ref.slot)
+          end
+          @args.each do |arg|
+            arg.bytecode(g)
+          end
+          g.send(:call, @args.count)
+          return
+        end
+        
+        # otherwise, call it as a method on self (TODO: should be module)
         g.push_self
         @args.each do |arg|
           arg.bytecode(g)
         end
+        
         # TODO: deal with splats and such as well.
-        g.send @node.name.to_sym, @args.count
+        g.send(@node.name.to_sym, @args.count)
       end
     end
   end

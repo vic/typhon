@@ -7,7 +7,7 @@ module Typhon
         scope = g.state.scope
         # First try to find it in a function scope.
         scope_depth = 0
-        while (scope.kind_of?(FunctionNode) || scope.kind_of?(ModuleNode))
+        while (scope.kind_of?(ExecutableNode))
           var = scope.variables[name]
           if (var)
             yield var.reference, scope_depth
@@ -23,7 +23,7 @@ module Typhon
     class NameNode < VarNode
       def bytecode(g)
         pos(g)
-        find_normal_var(g, @name) do |ref, depth|
+        find_normal_var(g, @name.to_sym) do |ref, depth|
           if (depth > 0)
             g.push_local_depth(depth, ref.slot)
           else
@@ -33,7 +33,7 @@ module Typhon
         end
         
         # TODO: Figure out Builtins.
-        #raise SyntaxError, "BOOM"
+        #raise SyntaxError, "Undefined variable #{@name}"
       end
     end
     
@@ -54,10 +54,12 @@ module Typhon
           else
             g.set_local(ref.slot)
           end
+          g.pop
           return
         end
         # if we're here we didn't find anywhere to set it, so create it.
         g.set_local(g.state.scope.new_local(name).reference.slot)
+        g.pop
       end
     end   
   end
