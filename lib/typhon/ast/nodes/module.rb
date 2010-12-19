@@ -16,6 +16,7 @@ module Typhon
           @statement.bytecode(g)
         end
 
+        g.pop
         g.push_self
       end
     end
@@ -39,10 +40,10 @@ module Typhon
         g.push_literal(nil)
         g.push_literal('__main__')
         g.push_literal(@doc)
-        g.send(:new, 3)
-
+        g.send(:invoke, 3)
+        
         @body = ModuleBody.new(@node, @line)
-        attach_and_call(g, :__module_init__, true)
+        attach_and_call(g, :__module_init__, false)
         g.ret # Actually want to return the module object to the enclosing scope.
       end
     end

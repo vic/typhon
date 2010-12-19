@@ -4,11 +4,12 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        g.push_self
+        g.push_const(:Typhon)
+        g.find_const(:Environment)
         @nodes.each do |node|
           node.bytecode(g)
         end
-        g.send :__print__, @nodes.count
+        g.send :__py_print, @nodes.count
       end
     end
   end

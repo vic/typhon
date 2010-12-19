@@ -1,3 +1,5 @@
+require 'typhon/environment/python_object'
+require 'typhon/environment/type'
+require 'typhon/environment/function'
 require 'typhon/environment/module'
-require 'typhon/environment/built_in'
-
+require 'typhon/environment/built_ins'

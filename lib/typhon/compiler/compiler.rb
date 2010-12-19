@@ -10,7 +10,7 @@ module Typhon
     end
 
 
-    def self.compile_file(file, print = true)
+    def self.compile_file(file, print = false)
       compiler = new :typhon_file, :compiled_file
       parser = compiler.parser
 

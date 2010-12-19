@@ -162,18 +162,26 @@ module Typhon
         case g.state.scope
         when ModuleNode
           @arguments = ModuleArguments.new(@argnames, @defaults)
-          
-          g.push_rubinius
+
+          g.push_self
           g.push_literal(@name.to_sym)
+          
+          g.push_const(:Function)
+          g.push_self
           g.push_generator(compile_body(g, false))
           g.push_scope
-          g.push_self
-          g.send(:attach_method, 4)          
+          g.send(:new, 3)
+          
+          g.send(:[]=, 2)
           
         when FunctionNode 
           @arguments = BlockArguments.new(@argnames, @defaults)
 
+          g.push_const(:Function)
+          g.push_self
+          g.send(:module, 0)
           g.create_block(compile_body(g, false))
+          g.send_with_block(:new, 1)
           g.set_local(g.state.scope.new_local(@name.to_sym).reference.slot)
           g.pop # set_local doesn't remove it from the stack.
         end
@@ -186,7 +194,11 @@ module Typhon
         
         @arguments = BlockArguments.new(@argnames, @defaults)
         
+        g.push_const(:Function)
+        g.push_self
+        g.send(:module, 0) if g.state.scope == FunctionNode
         g.create_block(compile_body(g, true))
+        g.send_with_block(:new, 1)
       end
     end
     
@@ -222,30 +234,14 @@ module Typhon
 
       def bytecode(g)
         pos(g)
-
-        # first look for a local variable that matches in
-        # the scope chain.
-        find_variable(g, @node.name.to_sym) do |ref, depth|
-          if (depth > 0)
-            g.push_local_depth(depth, ref.slot)
-          else
-            g.push_local(ref.slot)
-          end
-          @args.each do |arg|
-            arg.bytecode(g)
-          end
-          g.send(:call, @args.count)
-          return
-        end
         
-        # otherwise, call it as a method on self (TODO: should be module)
-        g.push_self
+        # evaluate the name into an object we can call
+        # and then pass off to invoke() to do the actual work.
+        @node.bytecode(g)
         @args.each do |arg|
           arg.bytecode(g)
         end
-        
-        # TODO: deal with splats and such as well.
-        g.send(@node.name.to_sym, @args.count)
+        g.send(:invoke, @args.count)
       end
     end
   end
