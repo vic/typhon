@@ -1,6 +1,10 @@
-def greet(name, blorp = 'woop'):
+def greet(name, wat, blorp = 'woop', zoop = 'noop'):
+    print '---'
     print 'hello', name
-    print 'boom'
-greet('Jack')
-greet('Jill')
-greet('Bob')
+    print 'wat:', wat
+    print 'blorp:', blorp
+    print 'zoop:', zoop
+greet('Jack', 'stuff')
+greet('Jill', 'cffuf', 'tuff')
+greet('Bob', 'wat')
+greet()
