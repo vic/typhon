@@ -1,3 +1,2 @@
-require 'typhon/ast/node'
-require 'typhon/ast/module'
+require 'typhon/ast/nodes'
 
