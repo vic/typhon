@@ -6,7 +6,7 @@ module Typhon
     # top level expressions are executed on this context.
     class PythonModule < Module
       include BuiltIn
-            
+
       # Initializes a new Python module object with +parent+ and
       # +name+. +name+ defaults to __main__, the main object scope.
       # +doc+ is a docstring if there was one, should be '' otherwise.
@@ -19,13 +19,12 @@ module Typhon
           __builtins__ = BuiltIn
         end
       end
-      
+
       def __define_method__(name, &block)
-        meta = class <<self; self; end
-        meta.send(:define_method, name, &block)
+        metaclass.send(:define_method, name, &block)
       end
     end
-    
+
     module BuiltIn
       PythonModule = Typhon::Environment::PythonModule
     end

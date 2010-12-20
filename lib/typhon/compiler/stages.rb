@@ -30,6 +30,7 @@ module Typhon
         @output = Rubinius::Generator.new
         root.variable_scope = @variable_scope
         root.bytecode @output
+
         @output.close
         run_next
       end
