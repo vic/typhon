@@ -32,7 +32,7 @@ Maybe Rubinius VM does what Parrot was originally intended to.
      # Set rubinius as your current ruby.
      $ rvm use rbx
      # Compile the hello world example
-     $ rbx rbx/compiler.rb examples/hello.py
+     $ ./bin/typhon examples/hello.py
 
 ## Status
 
