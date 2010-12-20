@@ -112,5 +112,6 @@ Typhon could be a tornado of two or three little Python snakes :)
 
 ## Contributors
 
+  - Graham Batty
   - Victor Hugo Borja <vic.borja@gmail.com>
 
