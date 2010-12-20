@@ -1,5 +1,15 @@
 module Typhon
   module Environment
+    BuiltInModule = PythonModule.new(nil, "__builtin__", "Built in objects and methods") do
+      self[:module] = PythonModule
+      self[:object] = ObjectBase
+      self[:type] = Type
+      self[:function] = Function
+      self[:__builtin__] = self
+    end
+    [PythonModule, ObjectBase, Type, Function].each {|i| i.reset_module(BuiltInModule) }
+    
+    
     def self.__py_print_to(out, *args)
       out.print(args.join(' ') + "\n")
     end

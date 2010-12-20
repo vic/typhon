@@ -15,7 +15,7 @@ module Typhon
       end
       
       def inspect()
-        "<#{@type && @type.module.name || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+        "<#{@type && @type.module && @type.module.name || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
       end
       
       def to_s
@@ -44,6 +44,7 @@ module Typhon
             found.push(c)
           end
         end
+        pp found
         return found.empty? ? nil : found
       end
       
