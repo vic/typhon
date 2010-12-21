@@ -10,13 +10,13 @@ module Typhon
       def bytecode(g)
         pos(g)
 
-        if @statement.empty?
-          g.push_nil
-        else
-          @statement.bytecode(g)
+        @statement.bytecode(g)
+        # dont pop if last node result was already popped (by
+        # DiscardNode) or if no statements were present on this body.
+        unless @statement.empty? || @statement.nodes.last.kind_of?(DiscardNode)
+          g.pop
         end
 
-        g.pop
         g.push_self
       end
     end
@@ -36,7 +36,7 @@ module Typhon
         g.push_const(:Typhon)
         g.find_const(:Environment)
         g.send(:get_python_module, 0)
-        
+
         if (@doc)
           g.dup
           g.push_literal(:__doc__)
@@ -44,7 +44,7 @@ module Typhon
           g.send(:[]=, 2)
           g.pop
         end
-        
+
         @body = ModuleBody.new(@node, @line)
         attach_and_call(g, :__module_init__, false)
         g.ret # Actually want to return the module object to the enclosing scope.
