@@ -29,12 +29,36 @@ module Typhon
           }
           
           def invoke(*args)
-            self[:__new__].invoke(self, *args)
+            self[:__new__].invoke(*args)
           end
           def new(*args, &block)
             o = invoke(*args)
             o.instance_eval(&block) if block
             o
+          end
+          
+          # Returns all parents with a key if there are any. Otherwise nil.
+          # If a block is given, yields them instead. Unlike #find, this
+          # one doesn't look at the type of the object, only its bases.
+          # Uses __class__.__mro__ to define search order
+          def find(name)
+            found = []
+            method_resolve_order.each do |c|
+              if (c.attributes.has_key?(name))
+                yield(c) if block_given?
+                found.push(c)
+              end
+            end
+            return found.empty? ? nil : found
+          end
+          
+          def descriptor
+            find(:__get__) {|i| return i }
+            return nil
+          end
+          def data_descriptor
+            find(:__get__) {|i| return i if (i.attributes[:__set__]) }
+            return nil
           end
           
           def reopen(&block)
@@ -112,9 +136,13 @@ module Typhon
     
     ObjectBase.reopen do
       extend FunctionTools
+      python_method(:__init__) do |s, *args|
+        # do nothing.
+      end
+      
       python_method(:__new__) do |c, *args|
         PythonObject.new(c) do
-          self[:__init__].invoke(self, *args)
+          self[:__init__].invoke(*args)
           self
         end
       end

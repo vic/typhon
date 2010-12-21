@@ -160,17 +160,16 @@ module Typhon
         pos(g)
         
         case g.state.scope
-        when ModuleNode
+        when ModuleNode, ClassNode
           @arguments = ModuleArguments.new(@argnames, @defaults)
 
           g.push_self
           g.push_literal(@name.to_sym)
           
           g.push_const(:Function)
-          g.push_self
           g.push_generator(compile_body(g, false))
           g.push_scope
-          g.send(:new, 3)
+          g.send(:new, 2)
           
           g.send(:[]=, 2)
           
@@ -178,10 +177,8 @@ module Typhon
           @arguments = BlockArguments.new(@argnames, @defaults)
 
           g.push_const(:Function)
-          g.push_self
-          g.send(:module, 0)
           g.create_block(compile_body(g, false))
-          g.send_with_block(:new, 1)
+          g.send_with_block(:new, 0)
           g.set_local(g.state.scope.new_local(@name.to_sym).reference.slot)
           g.pop # set_local doesn't remove it from the stack.
         end
@@ -195,10 +192,8 @@ module Typhon
         @arguments = BlockArguments.new(@argnames, @defaults)
         
         g.push_const(:Function)
-        g.push_self
-        g.send(:module, 0) if g.state.scope == FunctionNode
         g.create_block(compile_body(g, true))
-        g.send_with_block(:new, 1)
+        g.send_with_block(:new, 0)
       end
     end
     

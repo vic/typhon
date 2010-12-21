@@ -33,8 +33,13 @@ module Typhon
         end
         
         g.push_self
+        if (g.state.scope.kind_of?(ClassNode))
+          g.send(:from_module, 0) # we actually want the module.
+        end
         if (g.state.scope.kind_of?(FunctionNode))
-          g.send(:module, 0) # in function scope we need to pull the module out.
+          g.push_const(:Typhon)
+          g.find_const(:Environment)
+          g.send(:get_python_module, 0)
         end
         g.push_literal(@name.to_sym)
         g.push_const(:BuiltInModule)
@@ -48,31 +53,50 @@ module Typhon
 
         # TODO: This is completely biased towards single assignment. Everything
         # else will probably fail spectacularly.
-        name = @nodes[0].name.to_sym
+        case @nodes[0]
+        when AssNameNode
+          name = @nodes[0].name.to_sym
 
-        case g.state.scope
-        when FunctionNode
-          @expr.bytecode(g)
+          case g.state.scope
+          when FunctionNode
+            @expr.bytecode(g)
 
-          find_normal_var(g, name) do |ref, depth|
-            if (depth > 0)
-              g.set_local_depth(depth, ref.slot)
-            else
-              g.set_local(ref.slot)
+            find_normal_var(g, name) do |ref, depth|
+              if (depth > 0)
+                g.set_local_depth(depth, ref.slot)
+              else
+                g.set_local(ref.slot)
+              end
+              g.pop
+              return
             end
+            # if we're here we didn't find anywhere to set it, so create it.
+            g.set_local(g.state.scope.new_local(name).reference.slot)
             g.pop
-            return
+          when ModuleNode, ClassNode
+            g.push_self
+            g.push_literal(name)
+            @expr.bytecode(g)
+            g.send(:[]=, 2)
           end
-          # if we're here we didn't find anywhere to set it, so create it.
-          g.set_local(g.state.scope.new_local(name).reference.slot)
-          g.pop
-        when ModuleNode
-          g.push_self
-          g.push_literal(name)
+        when AssAttrNode
+          # evaluate the object on which the attribute must be set
+          @nodes[0].expr.bytecode(g)
+          g.push_literal(@nodes[0].attrname.to_sym)
           @expr.bytecode(g)
           g.send(:[]=, 2)
         end
       end
-    end   
+    end
+    
+    class GetattrNode < Node
+      def bytecode(g)
+        pos(g)
+        
+        @expr.bytecode(g)
+        g.push_literal(@attrname.to_sym)
+        g.send(:[], 1)
+      end
+    end
   end
 end

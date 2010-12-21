@@ -59,7 +59,9 @@ module Typhon
       'function',
       'literal',
       'module',
-      'utility'
+      'utility',
+      'class',
+      'operators',
     ].each do |type|
       require 'typhon/ast/nodes/' + type
     end

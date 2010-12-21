@@ -5,9 +5,22 @@ module Typhon
       self[:object] = ObjectBase
       self[:type] = Type
       self[:function] = Function
+      self[:boundfunction] = BoundFunction
+      self[:instancemethod] = InstanceMethod
+      self[:classmethod] = ClassMethod
+      self[:staticmethod] = StaticMethod
       self[:__builtin__] = self
+      
+      extend FunctionTools
+      python_method(:__debugger__) do
+        require 'debugger'
+        Debugger.start
+      end
     end
-    [PythonModule, ObjectBase, Type, Function].each {|i| i.reset_module(BuiltInModule) }
+    # stuff that was defined before this needs to be changed to bind to the BuiltInModule.
+    [PythonModule, ObjectBase, Type, Function, 
+     BoundFunction, InstanceMethod, ClassMethod,
+     StaticMethod,].each {|i| i.reset_module(BuiltInModule) }
     
     
     def self.__py_print_to(out, *args)
