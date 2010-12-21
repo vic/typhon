@@ -1,6 +1,6 @@
 module Typhon
   module Environment
-    python_class_c :Function, nil, [ObjectBase], 'function', 'function object' do
+    python_class_c :Function, [ObjectBase], 'function', 'function object' do
       # we special case this one because all other code-paths involve calling python.
       def invoke(mod, cm = nil, scope = nil, &block)
         PythonObject.new(Function) do

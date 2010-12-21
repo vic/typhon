@@ -1,11 +1,18 @@
 module Typhon
   module Environment
+    # Default implementation that gets replaced later.
+    def self.get_python_module()
+      nil
+    end
+    
     # Defines the behaviour of an instance of a python object.
     class PythonObject
       attr_reader :type
       attr_reader :attributes
+      attr_reader :from_module
       
       def initialize(type, merge_attrs = {}, *args)
+        @from_module = Typhon::Environment.get_python_module
         @type = type
         @attributes = {
           :__class__ => type,
@@ -15,7 +22,7 @@ module Typhon
       end
       
       def inspect()
-        "<#{@type && @type.module && @type.module.name || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+        "<#{@type && @type.module && @type.module[:__name__] || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
       end
       
       def to_s
@@ -44,7 +51,6 @@ module Typhon
             found.push(c)
           end
         end
-        pp found
         return found.empty? ? nil : found
       end
       
@@ -55,6 +61,13 @@ module Typhon
       def []=(name, val)
         delete(name) # make sure it clears any cached method invocation.
         @attributes[name] = val
+      end
+      # like [] except it allows you to specify a set of other objects to look in as well.
+      # Used for module scope lookups.
+      def lookup(name, *backups)
+        find(name) {|parent| return parent.attributes[name] }
+        return backups.shift.lookup(name, *backups) if backups
+        raise(NameError, "Unknown attribute #{name} on #{self}")
       end
       def has_key?(name)
         find(name) {|p| return true }

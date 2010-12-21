@@ -33,14 +33,17 @@ module Typhon
       def bytecode(g)
         pos(g)
 
-        g.push_const(:PythonModule)
-        # TODO: later this needs to take into account how the code was included
-        # In ruby the module name is internal to the system, but in python it comes
-        # from the import declaration that included it.
-        g.push_literal(nil)
-        g.push_literal('__main__')
-        g.push_literal(@doc)
-        g.send(:invoke, 3)
+        g.push_const(:Typhon)
+        g.find_const(:Environment)
+        g.send(:get_python_module, 0)
+        
+        if (@doc)
+          g.dup
+          g.push_literal(:__doc__)
+          g.push_literal(@doc)
+          g.send(:[]=, 2)
+          g.pop
+        end
         
         @body = ModuleBody.new(@node, @line)
         attach_and_call(g, :__module_init__, false)

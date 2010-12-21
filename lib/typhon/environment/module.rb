@@ -2,7 +2,7 @@ require 'typhon/environment/type'
 
 module Typhon
   module Environment
-    python_class_c :PythonModule, nil, [ObjectBase], 'module',
+    python_class_c :PythonModule, [ObjectBase], 'module',
       "A python source file is represented as a module object " +
       "top level expressions are executed on this context." do
         
@@ -15,6 +15,18 @@ module Typhon
         s[:__name__] = name
         s[:__doc__] = doc
       end
+    end
+    
+    def self.set_python_module(m, &block)
+      Thread.current[:python_module], m = m, Thread.current[:python_module]
+      begin
+        yield
+      ensure
+        Thread.current[:python_module], m = m, Thread.current[:python_module]
+      end
+    end
+    def self.get_python_module()
+      Thread.current[:python_module]
     end
   end
 end

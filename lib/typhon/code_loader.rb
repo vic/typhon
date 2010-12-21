@@ -11,7 +11,10 @@ module Typhon
       ss = ::Rubinius::StaticScope.new Typhon::Environment
       code = Object.new
       ::Rubinius.attach_method(:__run__, cm, ss, code)
-      code.__run__
+      m = Typhon::Environment::PythonModule.new(nil, :__main__, "The main module")
+      Typhon::Environment.set_python_module(m) do
+        code.__run__
+      end
     end
   end
 

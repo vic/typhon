@@ -13,9 +13,9 @@ module Typhon
         return bases.first ? bases.first.type : Type
       end
       
-      def self.create(mod, bases, name, doc, &init)
+      def self.create(bases, name, doc, &init)
         PythonObject.new(determine_type(bases)) do
-          @mod = mod
+          @mod = from_module
           @bases = bases
           @mro = [self, *bases] # TODO: This needs to be a lot smarter and less completely wrong.
           @name = name
@@ -24,7 +24,7 @@ module Typhon
             :__bases__ => bases,
             :__name__ => name,
             :__doc__ => doc,
-            :__module__ => mod,
+            :__module__ => @mod,
             :__mro__ => @mro,
           }
           
@@ -34,6 +34,7 @@ module Typhon
           def new(*args, &block)
             o = invoke(*args)
             o.instance_eval(&block) if block
+            o
           end
           
           def reopen(&block)
@@ -63,14 +64,14 @@ module Typhon
         end        
       end
     end
-    def self.python_class(mod, bases, name, doc, &init)
-      ObjectClass.create(mod, bases, name, doc, &init)
+    def self.python_class(bases, name, doc, &init)
+      ObjectClass.create(bases, name, doc, &init)
     end
-    def self.python_class_c(const_name, mod, bases, name, doc, m = self, &init)
-      m.const_set(const_name.to_sym, ObjectClass.create(mod, bases, name, doc, &init))
+    def self.python_class_c(const_name, bases, name, doc, m = self, &init)
+      m.const_set(const_name.to_sym, ObjectClass.create(bases, name, doc, &init))
     end
     
-    python_class_c :ObjectBase, nil, [], 'object', 'Base class'
+    python_class_c :ObjectBase, [], 'object', 'Base class'
     
     # Future code:
     # find(:__init__) do |obj|
@@ -78,7 +79,7 @@ module Typhon
     #  break;
     #end
 
-    python_class_c :Type, nil, [ObjectBase], 'type', 
+    python_class_c :Type, [ObjectBase], 'type', 
       "type(object) -> the object's type\ntype(name,bases,dict) -> new type" do
       reset_type(self) # make it self-referential
       

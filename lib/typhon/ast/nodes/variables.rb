@@ -37,7 +37,8 @@ module Typhon
           g.send(:module, 0) # in function scope we need to pull the module out.
         end
         g.push_literal(@name.to_sym)
-        g.send(:[], 1)
+        g.push_const(:BuiltInModule)
+        g.send(:lookup, 2)
       end
     end
     
