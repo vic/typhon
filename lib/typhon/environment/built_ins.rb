@@ -10,7 +10,8 @@ module Typhon
       self[:classmethod] = ClassMethod
       self[:staticmethod] = StaticMethod
       self[:__builtin__] = self
-      
+      self[:None] = nil
+
       extend FunctionTools
       python_method(:__debugger__) do
         require 'debugger'
@@ -18,11 +19,11 @@ module Typhon
       end
     end
     # stuff that was defined before this needs to be changed to bind to the BuiltInModule.
-    [PythonModule, ObjectBase, Type, Function, 
+    [PythonModule, ObjectBase, Type, Function,
      BoundFunction, InstanceMethod, ClassMethod,
      StaticMethod,].each {|i| i.reset_module(BuiltInModule) }
-    
-    
+
+
     def self.__py_print_to(out, *args)
       out.print(args.join(' ') + "\n")
     end
