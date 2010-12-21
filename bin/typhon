@@ -2,6 +2,9 @@
 $LOAD_PATH << File.expand_path('../lib', File.dirname(__FILE__))
 
 require 'typhon/compiler'
+require 'typhon/code_loader'
+require 'typhon/environment'
+require 'typhon/main'
 
-Typhon::Compiler::Command.run ARGV
+Typhon::Main.new.main ARGV
 

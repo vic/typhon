@@ -49,7 +49,7 @@ module Typhon
 
       def run
         @output = Typhon::AST.from_sexp(@input)
-        pp(@output) if @compiler.parser.print?
+        pp(@output) if @compiler.parser.print.ast?
         run_next
       end
     end
@@ -63,18 +63,12 @@ module Typhon
       stage :typhon_code
       next_stage PyAST
       attr_reader :filename, :line
+      attr_accessor :print
 
       def initialize(compiler, last)
         super
+        @print = Compiler::Print.new
         compiler.parser = self
-      end
-
-      def print?
-        @print
-      end
-
-      def print
-        @print = true
       end
 
       def input(code, filename = "eval", line = 1)
@@ -85,7 +79,7 @@ module Typhon
 
       def run
         @output = Parser.new.parse(@code)
-        pp(@output) if @print
+        pp(@output) if @print.sexp?
         run_next
       end
     end
@@ -99,18 +93,12 @@ module Typhon
       stage :typhon_file
       next_stage PyAST
       attr_reader :filename, :line
+      attr_accessor :print
 
       def initialize(compiler, last)
         super
+        @print = Compiler::Print.new
         compiler.parser = self
-      end
-
-      def print?
-        @print
-      end
-
-      def print
-        @print = true
       end
 
       def input(filename, line = 1)
@@ -120,7 +108,7 @@ module Typhon
 
       def run
         @output = Parser.new.parse(File.read(@filename))
-        pp(@output) if @print
+        pp(@output) if @print.sexp?
         run_next
       end
     end
