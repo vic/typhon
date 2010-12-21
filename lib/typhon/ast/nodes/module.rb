@@ -50,5 +50,26 @@ module Typhon
         g.ret # Actually want to return the module object to the enclosing scope.
       end
     end
+
+    class ImportNode < Node
+      def bytecode(g)
+        pos(g)
+
+        @names.each do |mod, name|
+          name ||= mod.split(".").last
+          g.push_const :Typhon
+          g.find_const :CodeLoader
+          g.push_literal mod
+          g.send :load_module, 1
+
+          g.push_self
+          g.swap
+          g.push_literal name.to_sym
+          g.swap
+          g.send :[]=, 2
+        end
+      end
+    end
+
   end
 end

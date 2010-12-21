@@ -1,4 +1,3 @@
-
 import imported
 
-print(imported)
+print(imported.__doc__)

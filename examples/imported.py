@@ -1,3 +1,3 @@
 "imported module"
 
-None
+print __name__
