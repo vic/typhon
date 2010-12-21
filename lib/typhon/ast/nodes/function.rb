@@ -154,6 +154,16 @@ module Typhon
         return meth
       end
     end
+    
+    class DecoratorsNode < Node
+      def bytecode(g)
+        @nodes.each do |decorator|
+          decorator.bytecode(g)
+          g.swap
+          g.send(:invoke, 1)
+        end
+      end
+    end
       
     class FunctionNode < ExecutableNode 
       def bytecode(g)
@@ -170,6 +180,7 @@ module Typhon
           g.push_generator(compile_body(g, false))
           g.push_scope
           g.send(:new, 2)
+          @decorators.bytecode(g) if @decorators
           
           g.send(:[]=, 2)
           
@@ -179,6 +190,7 @@ module Typhon
           g.push_const(:Function)
           g.create_block(compile_body(g, false))
           g.send_with_block(:new, 0)
+          @decorators.bytecode(g) if @decorators
           g.set_local(g.state.scope.new_local(@name.to_sym).reference.slot)
           g.pop # set_local doesn't remove it from the stack.
         end
