@@ -43,6 +43,8 @@ def rec_node(node, write):
               write(',')
           rec_node(child, write)
       write(']')
+    elif isinstance(node, long):
+      write(str(x)) # Longs break the ruby side of the parse.
     else:
       write(repr(node))
 
