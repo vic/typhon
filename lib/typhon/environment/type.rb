@@ -10,12 +10,12 @@ module Typhon
     ObjectClass = PythonObject.new(nil) do
       def self.determine_type(bases)
         # TODO: Look at bases for a proper type.
-        return bases.first ? bases.first.type : Type
+        return bases.first ? bases.first.py_type : Type
       end
       
       def self.create(bases, name, doc, &init)
         PythonObject.new(determine_type(bases)) do
-          @mod = from_module
+          @mod = py_from_module
           @bases = bases
           @name = name
           @doc = doc
@@ -28,7 +28,7 @@ module Typhon
           }
           
           def invoke(*args)
-            self[:__new__].invoke(*args)
+            self.py_send(:__new__, *args)
           end
           def new(*args, &block)
             o = invoke(*args)
@@ -43,7 +43,7 @@ module Typhon
           def find(name)
             found = []
             method_resolve_order.each do |c|
-              if (c.attributes.has_key?(name))
+              if (c.py_attributes.has_key?(name))
                 yield(c) if block_given?
                 found.push(c)
               end
@@ -51,12 +51,12 @@ module Typhon
             return found.empty? ? nil : found
           end
           
-          def descriptor
+          def py_descriptor
             find(:__get__) {|i| return i }
             return nil
           end
-          def data_descriptor
-            find(:__get__) {|i| return i if (i.attributes[:__set__]) }
+          def py_data_descriptor
+            find(:__get__) {|i| return i if (i.py_attributes[:__set__]) }
             return nil
           end
           
@@ -65,7 +65,7 @@ module Typhon
           end
           def reset_module(mod)
             @mod = mod
-            @attributes[:__module__] = mod
+            @py_attributes[:__module__] = mod
           end
       
           def module; @mod; end
@@ -88,7 +88,7 @@ module Typhon
             # the MRO before methods actually work. As such, this function
             # gets called in initialization, and then it probably calls self[:mro],
             # which calls this again with the ignore_method flag set to true.
-            if (!ignore_method && mro_meth = self.attributes[:mro])
+            if (!ignore_method && mro_meth = py_attributes[:mro])
               return mro_meth.invoke(self)
             else
               # TODO: this is completely and utterly wrong. See:
@@ -101,7 +101,7 @@ module Typhon
           end
 
           @mro = calculate_mro()
-          @attributes[:__mro__] = @mro
+          py_attributes[:__mro__] = @mro
           
           instance_eval(&init) if block_given?
         end        
@@ -124,7 +124,7 @@ module Typhon
 
     python_class_c :Type, [ObjectBase], 'type', 
       "type(object) -> the object's type\ntype(name,bases,dict) -> new type" do
-      reset_type(self) # make it self-referential
+      py_reset_type(self) # make it self-referential
       
       def new(name, bases, items = {})
         # do some stuff.
@@ -140,7 +140,7 @@ module Typhon
       
       def invoke(*args)
         if (args.count == 1)
-          return args[0].type
+          return args[0].py_type
         else
           # TODO: construct a new type from the given information and return it.
           return new(*args)
@@ -148,7 +148,7 @@ module Typhon
       end
     end
     
-    ObjectBase.reset_type(Type)
+    ObjectBase.py_reset_type(Type)
     
     # Include function and re-open things so we can add some functions
     require 'typhon/environment/function'
@@ -163,7 +163,7 @@ module Typhon
       # because ClassMethod relies on a valid __new__ and mro.
       python_method(:__new__) do |c, *args|
         PythonObject.new(c) do
-          self[:__init__].invoke(*args)
+          self.py_send(:__init__, *args)
           self
         end
       end

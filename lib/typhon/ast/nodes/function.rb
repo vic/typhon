@@ -182,7 +182,7 @@ module Typhon
           g.send(:new, 2)
           @decorators.bytecode(g) if @decorators
           
-          g.send(:[]=, 2)
+          g.send(:py_set, 2)
           
         when FunctionNode 
           @arguments = BlockArguments.new(@argnames, @defaults)

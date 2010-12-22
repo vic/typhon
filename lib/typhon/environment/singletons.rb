@@ -15,8 +15,8 @@ module Typhon
       end
     end
     
-    BuiltInModule[:NoneType] = NoneType
-    BuiltInModule[:None] = nil
+    BuiltInModule.py_set(:NoneType, NoneType)
+    BuiltInModule.py_set(:None, nil)
     
     python_class_c :NotImplementedType, [ObjectBase], 'NotImplementedType', "What's that you want? Can't have." do
       extend FunctionTools
@@ -33,7 +33,7 @@ module Typhon
       end
     end
     
-    BuiltInModule[:NotImplementedType] = NotImplementedType
+    BuiltInModule.py_set(:NotImplementedType, NotImplementedType)
     
     class NotImplementedClass
       class <<self
@@ -44,7 +44,7 @@ module Typhon
       end
       
       include PythonSingleton
-      python_initialize(NotImplementedType)
+      py_init(NotImplementedType)
       
       def to_py
         return self
@@ -52,13 +52,13 @@ module Typhon
     end
     
     NotImplemented = NotImplementedClass.new
-    BuiltInModule[:NotImplemented] = NotImplemented
+    BuiltInModule.py_set(:NotImplemented, NotImplemented)
   end
 end
 
 class NilClass
   include Typhon::Environment::PythonSingleton
-  python_initialize(Typhon::Environment::NoneType)
+  py_init(Typhon::Environment::NoneType)
   
   def to_py
     return self

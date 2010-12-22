@@ -52,7 +52,7 @@ module Typhon
           key, value = node
           key.bytecode(g)
           value.bytecode(g)
-          g.send(:[]=, 2)
+          g.send(:py_set, 2)
           g.pop
         end
         # ...

@@ -1,16 +1,16 @@
 module Typhon
   module Environment
     BuiltInModule = PythonModule.new(nil, "__builtin__", "Built in objects and methods") do
-      self[:module] = PythonModule
-      self[:object] = ObjectBase
-      self[:type] = Type
-      self[:function] = Function
-      self[:boundfunction] = BoundFunction
-      self[:instancemethod] = InstanceMethod
-      self[:classmethod] = ClassMethod
-      self[:staticmethod] = StaticMethod
-      self[:__builtin__] = self
-      self[:None] = nil
+      py_set(:module, PythonModule)
+      py_set(:object, ObjectBase)
+      py_set(:type, Type)
+      py_set(:function, Function)
+      py_set(:boundfunction, BoundFunction)
+      py_set(:instancemethod, InstanceMethod)
+      py_set(:classmethod, ClassMethod)
+      py_set(:staticmethod, StaticMethod)
+      py_set(:__builtin__, self)
+      py_set(:None, nil)
 
       extend FunctionTools
       python_method(:__debugger__) do
