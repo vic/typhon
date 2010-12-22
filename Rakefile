@@ -9,7 +9,7 @@ end
 
 desc "Clean generated files"
 task :clean do
-  rm_f FileList["**/*.rbc"]
+  rm_f FileList["**/*.{pyc,rbc}"]
 end
 
 task :build
