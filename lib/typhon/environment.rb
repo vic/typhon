@@ -5,5 +5,6 @@ require 'typhon/environment/module'
 require 'typhon/environment/built_ins'
 
 Typhon::Environment.set_python_module(Typhon::Environment::BuiltInModule) do
+  require 'typhon/environment/exceptions'
   require 'typhon/environment/string'
 end
