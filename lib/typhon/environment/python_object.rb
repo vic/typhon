@@ -6,7 +6,7 @@ module Typhon
     end
 
     # Defines the behaviour of an instance of a python object.
-    class PythonObject
+    module PythonObjectMixin
       attr_reader :type
       attr_reader :attributes
       attr_reader :from_module
@@ -147,6 +147,10 @@ module Typhon
       def invoke(*args)
         self[:__call__].invoke(*args)
       end
+    end
+    
+    class PythonObject
+      include PythonObjectMixin
     end
   end
 end
