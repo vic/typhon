@@ -39,7 +39,7 @@ module Typhon
     # loaded from, to search for the new module.
     def self.load_module(name, from_module)
       directory = File.dirname(from_module.py_get(:__file__) || "")
-      filename = File.expand_path("#{name}.py", directory)
+      filename = File.expand_path("#{name.gsub(".", File::Separator)}.py", directory)
       # TODO: use system load-path to search for file if it doesnt
       # exist.
       cm = pythonize_literals(Compiler.compile_if_needed(filename))
