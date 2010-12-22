@@ -27,22 +27,26 @@ module Typhon
       ss = ::Rubinius::StaticScope.new Typhon::Environment
       code = Object.new
       ::Rubinius.attach_method(:__run__, cm, ss, code)
-      m = Typhon::Environment::PythonModule.new(nil, :__main__, "The main module")
+      m = Typhon::Environment::PythonModule.new(nil, :__main__,
+                                                "The main module", name)
       Typhon::Environment.set_python_module(m) do
         code.__run__
       end
     end
 
-    def self.load_module(name, from_module = nil)
-      # FIXME: use File.dirname(from_module.file) or use a directory stack to
-      # obtain the current directory.
-      directory = "examples"
+    # Load the named module from from_module.
+    # from_module is a python module object. we obtain the file it was
+    # loaded from, to search for the new module.
+    def self.load_module(name, from_module)
+      directory = File.dirname(from_module.py_get(:__file__) || "")
       filename = File.expand_path("#{name}.py", directory)
+      # TODO: use system load-path to search for file if it doesnt
+      # exist.
       cm = pythonize_literals(Compiler.compile_if_needed(filename))
       ss = ::Rubinius::StaticScope.new Typhon::Environment
       code = Object.new
       ::Rubinius.attach_method(:__run__, cm, ss, code)
-      m = Typhon::Environment::PythonModule.new(nil, name.to_sym, name.to_s)
+      m = Typhon::Environment::PythonModule.new(nil, name.to_sym, name.to_s, filename)
       Typhon::Environment.set_python_module(m) do
         code.__run__
       end

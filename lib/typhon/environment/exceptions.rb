@@ -1,27 +1,30 @@
 module Typhon
   module Environment
-    ExceptionsModule = PythonModule.new(nil, 'exceptions', "Python's standard exception class hierarchy.\n\n" +
-      "Exceptions found here are defined both in the exceptions module and the\n" +
-      "built-in namespace.  It is recommended that user-defined exceptions\n" +
-      "inherit from Exception.  See the documentation for the exception\n" +
-      "inheritance hierarchy.\n")
-    
+    ExceptionsModule = PythonModule.new(nil, 'exceptions', <<-DOC, nil)
+Python's standard exception class hierarchy.
+
+Exceptions found here are defined both in the exceptions module and the
+built-in namespace.  It is recommended that user-defined exceptions
+inherit from Exception.  See the documentation for the exception
+inheritance hierarchy.
+DOC
+
     set_python_module(ExceptionsModule) do
       class BaseException < Exception
         include PythonObjectMixin
-        
+
         attr_reader :args
-        
+
         def self.factory
           BaseExceptionClass
         end
-        
+
         def initialize(*args)
           super(args[0])
           @args = args
           py_init(self.class.factory, {:args => args, :message => ''.to_py})
         end
-        
+
         def to_s()
           self[:__str__].invoke
         end
@@ -29,14 +32,14 @@ module Typhon
           self[:__repr__].invoke
         end
       end
-      
+
       python_class_c :BaseExceptionClass, [ObjectBase], 'BaseException', 'Common base class for all exceptions' do
         extend FunctionTools
         python_class_method(:__new__) do |c, *args|
           klass = c.py_cache[:derived_exception] || BaseException
           klass.new(*args)
         end
-        
+
         python_method(:__repr__) do |s|
           "#{s[:__name__]}#{s[:args][:__repr__].invoke}"
         end
@@ -46,26 +49,26 @@ module Typhon
       end
       ExceptionsModule.py_set(:BaseException, BaseExceptionClass)
       BuiltInModule.py_set(:BaseException, BaseExceptionClass)
-      
+
       def self.make_exception(name, base, doc)
         class_name = :"#{name}Class"
         base_class_name = "#{base.__name__}Class".gsub('Typhon::Environment::', '')
         m = Typhon::Environment
-        
+
         # create the ruby class
         k = m.const_set(name, Class.new(base))
-        
+
         # create the python class (factory)
         c = m.const_set(class_name, python_class([m.const_get(base_class_name)], name, doc))
         c.py_cache[:derived_exception] = k
-        
+
         # add tell the ruby class what python class it's from.
         k.metaclass.send(:define_method, :factory) { c }
-        
+
         ExceptionsModule.py_set(name, c)
         BuiltInModule.py_set(name, c)
       end
-      
+
       make_exception(:SystemExit, BaseException, 'Request to exit from the interpreter.')
       make_exception(:KeyboardInterrupt, BaseException, 'Program interrupted by user.')
 

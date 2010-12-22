@@ -1,6 +1,6 @@
 module Typhon
   module Environment
-    BuiltInModule = PythonModule.new(nil, "__builtin__", "Built in objects and methods") do
+    BuiltInModule = PythonModule.new(nil, "__builtin__", "Built in objects and methods", nil) do
       py_set(:module, PythonModule)
       py_set(:object, ObjectBase)
       py_set(:type, Type)
