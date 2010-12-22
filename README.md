@@ -102,9 +102,10 @@ Typhon could be a tornado of two or three little Python snakes :)
 
   The name was choosen as a funny anagram of Python.
 
-  Also Typhon seems to be a weird looking creature:
-  [http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm)
+  In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures. 
 
+  Theres a cool t-shirt showing what Typhon is all about: 
+  [snakes on rbx-head](http://twinsrpnt.com/blog/?p=179)
 
 ## License
 
