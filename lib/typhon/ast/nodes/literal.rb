@@ -4,18 +4,11 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        g.push_literal(@value.to_py)
-      end
-    end
-    
-    class ListNode < Node
-      def bytecode(g)
-        pos(g)
-        
-        @nodes.each do |node|
-          node.bytecode(g)
+        if (@value.respond_to?(:to_py))
+          g.push_literal(@value.to_py)
+        else
+          g.push_literal(@value)
         end
-        g.make_array(@nodes.size)
       end
     end
     
@@ -23,11 +16,27 @@ module Typhon
       def bytecode(g)
         pos(g)
         
+        
+        
         @nodes.each do |node|
           node.bytecode(g)
         end
         g.make_array(@nodes.size)
         # TODO: This needs to actually make a frozen list of some sort. Tuples are immutable.
+      end
+    end
+    
+    class ListNode < TupleNode
+      def bytecode(g)
+        pos(g)
+        
+        
+        
+        g.push_literal()
+        @nodes.each do |node|
+          node.bytecode(g)
+        end
+        g.make_array(@nodes.size)
       end
     end
     
