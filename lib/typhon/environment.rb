@@ -7,5 +7,6 @@ require 'typhon/environment/built_ins'
 Typhon::Environment.set_python_module(Typhon::Environment::BuiltInModule) do
   require 'typhon/environment/numbers'
   require 'typhon/environment/string'
+  require 'typhon/environment/singletons'
   require 'typhon/environment/exceptions'
 end
