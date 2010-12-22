@@ -56,11 +56,12 @@ module Typhon
         @attributes[:__class__] = type
       end
 
-      def [](name)
+      def [](name, flags = {})
+        overload_self = flags[:with_self] || self
         if (type?)
-          descriptor_args = [nil, self]
+          descriptor_args = [nil, overload_self]
         else
-          descriptor_args = [self, self.type]
+          descriptor_args = [overload_self, overload_self.type]
         end
 
         # first we look in the parent type's __dict__ for a data descriptor
@@ -96,7 +97,7 @@ module Typhon
             return at
           end
         end
-        raise NameError, "Unknown attribute #{name} on #{self}"
+        raise NameError, "Unknown attribute #{name} on #{overload_self}"
       end
 
       def type?
@@ -147,6 +148,26 @@ module Typhon
       def invoke(*args)
         self[:__call__].invoke(*args)
       end
+    end
+    
+    # Defines a mixin that can be used on things like Integer that is
+    # essentially read only and provides very few traits. It turns the
+    # class (as opposed to the object) into a PythonObject and returns
+    # information from that while making it read-only.
+    # Remember to call python_initialize on the class.
+    module PythonSingleton
+      def self.included(o)
+        o.extend(PythonObjectMixin)
+      end
+      
+      def type?; false; end
+      def descriptor; nil; end
+      def data_descriptor; nil; end
+      def invoke(*args); raise TypeError.new("Can't invoke an singleton object of type #{type}"); end
+      def type; self.class.type; end
+      def [](name); self.class[name, {:with_self => self}]; end
+      def []=(name, val); raise AttributeError.new("Can't set attributes on singleton object of type #{type}"); end
+      def cache; self.class.cache; end
     end
     
     class PythonObject
