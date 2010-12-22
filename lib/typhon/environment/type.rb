@@ -17,7 +17,6 @@ module Typhon
         PythonObject.new(determine_type(bases)) do
           @mod = from_module
           @bases = bases
-          @mro = [self, *bases] # TODO: This needs to be a lot smarter and less completely wrong.
           @name = name
           @doc = doc
           attrs = {
@@ -83,7 +82,27 @@ module Typhon
           def derived_class_c(const_name, mod, name, doc, m = self, &init)
             m.const_set(const_name.to_sym, ObjectClass.create(mod, [self], name, doc, &init))
           end
+          
+          def calculate_mro(ignore_method = false)
+            # this method is a little weird because we need to calculate
+            # the MRO before methods actually work. As such, this function
+            # gets called in initialization, and then it probably calls self[:mro],
+            # which calls this again with the ignore_method flag set to true.
+            if (!ignore_method && mro_meth = self.attributes[:mro])
+              return mro_meth.invoke(self)
+            else
+              # TODO: this is completely and utterly wrong. See:
+              # http://www.python.org/download/releases/2.3/mro/
+              # for more information on the real algorithm.
+              # Also here:
+              # http://www.cafepy.com/article/python_attributes_and_methods/python_attributes_and_methods.html
+              return [self, *bases.collect {|base| base.calculate_mro }].flatten.uniq
+            end
+          end
 
+          @mro = calculate_mro()
+          @attributes[:__mro__] = @mro
+          
           instance_eval(&init) if block_given?
         end        
       end
@@ -140,11 +159,17 @@ module Typhon
         # do nothing.
       end
       
+      # These should be python_class_method, but that won't work
+      # because ClassMethod relies on a valid __new__ and mro.
       python_method(:__new__) do |c, *args|
         PythonObject.new(c) do
           self[:__init__].invoke(*args)
           self
         end
+      end
+      
+      python_method(:mro) do |c|
+        c.calculate_mro(true)
       end
     end
   end
