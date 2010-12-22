@@ -7,74 +7,74 @@ module Typhon
 
     # Defines the behaviour of an instance of a python object.
     module PythonObjectMixin
-      attr_reader :type
-      attr_reader :attributes
-      attr_reader :from_module
+      attr_reader :py_type
+      attr_reader :py_attributes
+      attr_reader :py_from_module
 
       # this is a hash that applies *only* to this
       # object, with no inheritance rules applied.
       # It's for storing cached values since @variables
       # don't work on python_methods.
-      attr_reader :cache
+      attr_reader :py_cache
 
       class DictWrapper
         def initialize(h)
           @h = h
         end
-        def [](name)
+        def py_get(name)
           @h[name.to_sym]
         end
-        def []=(name, val)
+        def py_set(name, val)
           @h[name.to_sym, val]
         end
-        def descriptor; false; end
-        def data_descriptor; false; end
+        def py_descriptor; false; end
+        def py_data_descriptor; false; end
       end
 
-      def python_initialize(type, merge_attrs = {}, *args)
-        @cache = {}
-        @from_module = Typhon::Environment.get_python_module
-        @type = type
-        @attributes = {
+      def py_init(type, merge_attrs = {}, *args)
+        @py_cache = {}
+        @py_from_module = Typhon::Environment.get_python_module
+        @py_type = type
+        @py_attributes = {
           :__class__ => type,
         }
-        @attributes[:__dict__] = DictWrapper.new(@attributes)
-        merge_attrs.each {|k,v| @attributes[k]=v }
+        @py_attributes[:__dict__] = DictWrapper.new(@py_attributes)
+        merge_attrs.each {|k,v| @py_attributes[k]=v }
         instance_eval(&Proc.new) if block_given?
       end
 
-      def reset_type(new_type)
-        @type = new_type
-        @attributes[:__class__] = type
+      def py_reset_type(new_type)
+        @py_type = new_type
+        @py_attributes[:__class__] = new_type
       end
 
-      def [](name, flags = {})
+      def py_get(name, flags = {})
         overload_self = flags[:with_self] || self
-        if (type?)
+        if (py_type?)
           descriptor_args = [nil, overload_self]
         else
-          descriptor_args = [overload_self, overload_self.type]
+          descriptor_args = [overload_self, overload_self.py_type]
         end
 
         # first we look in the parent type's __dict__ for a data descriptor
-        topts = type.find(name) do |p|
-          at = p.attributes[name]
-          if (at && desc = at.data_descriptor)
-            return desc.attributes[:__get__].invoke(at, *descriptor_args)
+        topts = py_type.find(name) do |p|
+          at = p.py_attributes[name]
+          if (at && desc = at.py_data_descriptor)
+            return desc.py_attributes[:__get__].py_invoke(at, *descriptor_args)
           end
         end
         # then we look in this class (if we're a type ourselves, we look in our own bases)
-        if (type?)
+        if (py_type?)
           find(name) do |p|
-            at = p.attributes[name]
-            if (at && desc = at.descriptor)
-              return desc.attributes[:__get__].invoke(at, *descriptor_args)
+            at = p.py_attributes[name]
+            if (at && desc = at.py_descriptor)
+              return desc.py_attributes[:__get__].py_invoke(at, *descriptor_args)
             else
               return at
             end
           end
-        elsif (attributes.has_key?(name))
-          return attributes[name]
+        elsif (py_attributes.has_key?(name))
+          return py_attributes[name]
         end
 
         # and then we once again look in the parent type's __dict__, this time
@@ -82,9 +82,9 @@ module Typhon
         # note we reuse the list from the lookup above since we can expect it to
         # not have changed in the meantime (hopefuly)
         topts && topts.each do |p|
-          at = p.attributes[name]
-          if (at && desc = at.descriptor)
-            return desc.attributes[:__get__].invoke(at, *descriptor_args)
+          at = p.py_attributes[name]
+          if (at && desc = at.py_descriptor)
+            return desc.py_attributes[:__get__].py_invoke(at, *descriptor_args)
           else
             return at
           end
@@ -92,53 +92,55 @@ module Typhon
         raise NameError, "Unknown attribute #{name} on #{overload_self}"
       end
 
-      def type?
-        return type == Type
+      def py_type?
+        return py_type == Type
       end
 
-      def descriptor
-        return attributes.has_key?(:__get__) && self || type.descriptor
+      def py_descriptor
+        return py_attributes.has_key?(:__get__) && self || py_type.py_descriptor
       end
-      def data_descriptor
-        return attributes.has_key?(:__get__) && attributes.has_key(:__set__) && self || type.data_descriptor
+      def py_data_descriptor
+        return py_attributes.has_key?(:__get__) && py_attributes.has_key?(:__set__) && self || py_type.py_data_descriptor
       end
 
-      def []=(name, val)
-        delete(name) # make sure it clears any cached method invocation.
-        type.find(name) do |p|
-          at = p.attributes[name]
-          if (desc = p.data_desciptor)
-            desc.attributes[:__set__].invoke(at, self, val)
+      def py_set(name, val)
+        py_del(name) # make sure it clears any cached method invocation.
+        py_type.find(name) do |p|
+          at = p.py_attributes[name]
+          if (desc = p.py_data_desciptor)
+            desc.py_attributes[:__set__].py_invoke(at, self, val)
             return val
           end
         end
-        return @attributes[name] = val
+        return @py_attributes[name] = val
       end
       # like [] except it allows you to specify a set of other objects to look in as well.
       # Used for module scope lookups.
-      def lookup(name, *backups)
+      def py_lookup(name, *backups)
         begin
-          return self[name]
+          return self.py_get(name)
         rescue NameError
-          return backups.shift.lookup(name, *backups) if !backups.empty?
+          return backups.shift.py_lookup(name, *backups) if !backups.empty?
         end
         raise(NameError, "Unknown attribute #{name} on #{self}")
       end
-      def has_key?(name)
-        find(name) {|p| return true }
+      def py_has_attrib?(name)
+        return true if py_attributes[name]
+        py_type.find(name) {|p| return true }
         return false
       end
-      def delete(name)
-        @attributes.delete(name)
-        metaclass.instance_eval do
-          remove_method("__py_#{name}") if respond_to?("__py_#{name}")
-        end
+      def py_del(name)
+        @py_attributes.delete(name)
+      end
+      
+      def py_send(method, *args)
+        py_get(method).invoke(*args)
       end
 
       # Default behaviour for object invocation. If there's an __call__
       # attribute we defer to it, otherwise we blow up
-      def invoke(*args)
-        self[:__call__].invoke(*args)
+      def py_invoke(*args)
+        py_send(:__call__, *args)
       end
     end
     
@@ -146,27 +148,27 @@ module Typhon
     # essentially read only and provides very few traits. It turns the
     # class (as opposed to the object) into a PythonObject and returns
     # information from that while making it read-only.
-    # Remember to call python_initialize on the class.
+    # Remember to call py_init on the class.
     module PythonSingleton
       def self.included(o)
         o.extend(PythonObjectMixin)
       end
       
-      def type?; false; end
-      def descriptor; nil; end
-      def data_descriptor; nil; end
-      def invoke(*args); raise TypeError.new("Can't invoke an singleton object of type #{type}"); end
-      def type; self.class.type; end
-      def [](name); self.class[name, {:with_self => self}]; end
-      def []=(name, val); raise AttributeError.new("Can't set attributes on singleton object of type #{type}"); end
-      def cache; self.class.cache; end
+      def py_type?; false; end
+      def py_descriptor; nil; end
+      def py_data_descriptor; nil; end
+      def py_invoke(*args); raise TypeError.new("Can't invoke an singleton object of type #{type}"); end
+      def py_type; self.class.py_type; end
+      def py_get(name); self.class[name, {:with_self => self}]; end
+      def py_set(name, val); raise AttributeError.new("Can't set attributes on singleton object of type #{type}"); end
+      def py_cache; self.class.py_cache; end
     end
     
     class PythonObject
       include PythonObjectMixin
       
       def initialize(*args, &block)
-        python_initialize(*args, &block)
+        py_init(*args, &block)
       end
 
       def inspect()

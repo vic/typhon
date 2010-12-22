@@ -19,7 +19,7 @@ module Typhon
         def initialize(*args)
           super(args[0])
           @args = args
-          python_initialize(self.class.factory, {:args => args, :message => ''.to_py})
+          py_init(self.class.factory, {:args => args, :message => ''.to_py})
         end
         
         def to_s()
@@ -33,7 +33,7 @@ module Typhon
       python_class_c :BaseExceptionClass, [ObjectBase], 'BaseException', 'Common base class for all exceptions' do
         extend FunctionTools
         python_class_method(:__new__) do |c, *args|
-          klass = c.cache[:derived_exception] || BaseException
+          klass = c.py_cache[:derived_exception] || BaseException
           klass.new(*args)
         end
         
@@ -44,8 +44,8 @@ module Typhon
           s[:args]
         end
       end
-      ExceptionsModule[:BaseException] = BaseExceptionClass
-      BuiltInModule[:BaseException] = BaseExceptionClass
+      ExceptionsModule.py_set(:BaseException, BaseExceptionClass)
+      BuiltInModule.py_set(:BaseException, BaseExceptionClass)
       
       def self.make_exception(name, base, doc)
         class_name = :"#{name}Class"
@@ -57,13 +57,13 @@ module Typhon
         
         # create the python class (factory)
         c = m.const_set(class_name, python_class([m.const_get(base_class_name)], name, doc))
-        c.cache[:derived_exception] = k
+        c.py_cache[:derived_exception] = k
         
         # add tell the ruby class what python class it's from.
         k.metaclass.send(:define_method, :factory) { c }
         
-        ExceptionsModule[name] = c
-        BuiltInModule[name] = c
+        ExceptionsModule.py_set(name, c)
+        BuiltInModule.py_set(name, c)
       end
       
       make_exception(:SystemExit, BaseException, 'Request to exit from the interpreter.')

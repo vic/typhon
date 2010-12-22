@@ -22,7 +22,7 @@ module Typhon
         g.swap
         g.push_literal(@name)
         g.swap
-        g.send(:[]=, 2)
+        g.send(:py_set, 2)
       end
     end
   end

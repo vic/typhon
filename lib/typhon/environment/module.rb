@@ -11,9 +11,9 @@ module Typhon
       # +name+. +name+ defaults to __main__, the main object scope.
       # +doc+ is a docstring if there was one, should be '' otherwise.
       python_method(:__init__) do |s, parent, name, doc|
-        s[:__parent__] = parent
-        s[:__name__] = name
-        s[:__doc__] = doc
+        s.py_set(:__parent__, parent)
+        s.py_set(:__name__, name)
+        s.py_set(:__doc__, doc)
       end
     end
     

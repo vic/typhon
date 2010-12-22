@@ -34,7 +34,7 @@ module Typhon
         
         g.push_self
         if (g.state.scope.kind_of?(ClassNode))
-          g.send(:from_module, 0) # we actually want the module.
+          g.send(:py_from_module, 0) # we actually want the module.
         end
         if (g.state.scope.kind_of?(FunctionNode))
           g.push_const(:Typhon)
@@ -43,7 +43,7 @@ module Typhon
         end
         g.push_literal(@name.to_sym)
         g.push_const(:BuiltInModule)
-        g.send(:lookup, 2)
+        g.send(:py_lookup, 2)
       end
     end
     
@@ -77,14 +77,14 @@ module Typhon
             g.push_self
             g.push_literal(name)
             @expr.bytecode(g)
-            g.send(:[]=, 2)
+            g.send(:py_set, 2)
           end
         when AssAttrNode
           # evaluate the object on which the attribute must be set
           @nodes[0].expr.bytecode(g)
           g.push_literal(@nodes[0].attrname.to_sym)
           @expr.bytecode(g)
-          g.send(:[]=, 2)
+          g.send(:py_set, 2)
         end
       end
     end
@@ -95,7 +95,7 @@ module Typhon
         
         @expr.bytecode(g)
         g.push_literal(@attrname.to_sym)
-        g.send(:[], 1)
+        g.send(:py_get, 1)
       end
     end
   end

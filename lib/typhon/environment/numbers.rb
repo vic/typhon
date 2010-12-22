@@ -72,7 +72,7 @@ module Typhon
       python_method(:__str__) {|s| s.to_s }
       python_method(:__repr__) {|s| s.to_s }
     end
-    BuiltInModule[:int] = Int
+    BuiltInModule.py_set(:int, Int)
     
     python_class_c :Long, [ObjectBase], 'long', "ong(x[, base]) -> integer\n\n" + 
       "Convert a string or number to a long integer, if possible.  A floating\n" +
@@ -122,13 +122,13 @@ module Typhon
       python_method(:__str__) {|s| s.to_s }
       python_method(:__repr__) {|s| s.to_s }
     end
-    BuiltInModule[:float] = PythonFloat
+    BuiltInModule.py_set(:float, PythonFloat)
   end
 end
 
 class Fixnum
   include Typhon::Environment::PythonSingleton
-  python_initialize(Typhon::Environment::Int)
+  py_init(Typhon::Environment::Int)
   
   def to_py()
     return self
@@ -137,7 +137,7 @@ end
 
 class Bignum
   include Typhon::Environment::PythonSingleton
-  python_initialize(Typhon::Environment::Long)
+  py_init(Typhon::Environment::Long)
   
   def to_py()
     return self
@@ -146,7 +146,7 @@ end
 
 class Float
   include Typhon::Environment::PythonSingleton
-  python_initialize(Typhon::Environment::PythonFloat)
+  py_init(Typhon::Environment::PythonFloat)
   
   def to_py()
     return self

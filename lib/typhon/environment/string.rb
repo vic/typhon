@@ -10,7 +10,7 @@ module Typhon
           s = obj.to_py[:__str__].invoke
         end
         super(s)
-        python_initialize(PythonStringClass)
+        py_init(PythonStringClass)
       end
       
       def inspect()
@@ -37,7 +37,7 @@ module Typhon
       end
     end
     
-    BuiltInModule[:str] = PythonStringClass
+    BuiltInModule.py_set(:str, PythonStringClass)
   end
 end
 
