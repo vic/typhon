@@ -89,7 +89,7 @@ module Typhon
             return at
           end
         end
-        raise NameError, "Unknown attribute #{name} on #{overload_self}"
+        raise AttributeError.new("Unknown attribute #{name} on #{overload_self}".to_py)
       end
 
       def py_type?
@@ -122,7 +122,7 @@ module Typhon
         rescue NameError
           return backups.shift.py_lookup(name, *backups) if !backups.empty?
         end
-        raise(NameError, "Unknown attribute #{name} on #{self}")
+        raise AttributeError.new("Unknown attribute #{name} on #{self}".to_py)
       end
       def py_has_attrib?(name)
         return true if py_attributes[name]
