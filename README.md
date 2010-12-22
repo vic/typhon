@@ -105,7 +105,7 @@ Typhon could be a tornado of two or three little Python snakes :)
   In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures. 
 
   Theres a cool t-shirt showing what Typhon is all about: 
-  [snakes on rbx-head](http://twinsrpnt.com/blog/?p=179)
+  [snakes on rbx-head](http://twinsrpnt.com/blog/?p=180)
 
 ## License
 
