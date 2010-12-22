@@ -31,7 +31,7 @@ module Typhon
         def data_descriptor; false; end
       end
 
-      def initialize(type, merge_attrs = {}, *args)
+      def python_initialize(type, merge_attrs = {}, *args)
         @cache = {}
         @from_module = Typhon::Environment.get_python_module
         @type = type
@@ -41,14 +41,6 @@ module Typhon
         @attributes[:__dict__] = DictWrapper.new(@attributes)
         merge_attrs.each {|k,v| @attributes[k]=v }
         instance_eval(&Proc.new) if block_given?
-      end
-
-      def inspect()
-        "<#{@type && @type.module && @type.module[:__name__] || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
-      end
-
-      def to_s
-        inspect
       end
 
       def reset_type(new_type)
@@ -172,6 +164,18 @@ module Typhon
     
     class PythonObject
       include PythonObjectMixin
+      
+      def initialize(*args, &block)
+        python_initialize(*args, &block)
+      end
+
+      def inspect()
+        "<#{@type && @type.module && @type.module[:__name__] || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+      end
+
+      def to_s
+        inspect
+      end
     end
   end
 end

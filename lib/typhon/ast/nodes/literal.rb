@@ -4,7 +4,7 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        g.push_literal(@value)
+        g.push_literal(@value.to_py)
       end
     end
     
