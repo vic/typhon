@@ -20,7 +20,7 @@ For example, to test the output of running the examples/foo/bar.py file
 with two command line arguments, you should have the first line in the
 .out file set to:
 
-    #! typhon examples/foo/bar.y firstArg secondArg
+    #! typhon examples/foo/bar.py firstArg secondArg
 
 Files not having that comment as first line will just be ignored.
 
@@ -28,5 +28,5 @@ Typhon is expected to be compatible as possible with the `python`
 program. Because of this all tests run with `typhon` will be also run
 with `python` and the output is expected to be equal.
 
-Also, some examples output memory locations like 0x0AF30 in that cases
-.out files can use ruby regexes like: #{/0x\w+/}.
+Also, some examples output memory locations like `0x0AF30` in that cases
+.out files can use ruby regexes like: `#{/0x\w+/}`.
