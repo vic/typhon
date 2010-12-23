@@ -4,12 +4,19 @@ module Typhon
       include PythonObjectMixin
 
       def initialize(obj = '')
-        if obj.is_a?(String)
-          s = obj
-        else
-          s = obj.to_py.py_get(:__str__).invoke
+        if !obj.is_a?(String) && obj.respond_to?(:to_py)
+          obj = obj.to_py
+          case obj.py_type
+          when Type
+            # python appears to ignore __str__ on type objects, 
+            # otherwise a type that defined __str__ for its instances
+            # couldn't be represented because types and their instances
+            # share a namespace.
+            obj = obj.nice_type_string 
+          end
+          obj = obj.py_send(:__str__)
         end
-        super(s)
+        super(obj)
         py_init(PythonStringClass)
       end
 
@@ -25,6 +32,7 @@ module Typhon
       extend FunctionTools
 
       python_class_method(:__new__) do |c, obj|
+        return obj if obj.is_a?(PythonString)
         o = PythonString.new(obj || '')
       end
 

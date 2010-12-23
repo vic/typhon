@@ -146,6 +146,10 @@ module Typhon
       def py_send(method, *args)
         py_get(method).invoke(*args)
       end
+      
+      def py_instance_string()
+        "<#{@py_type && @py_type.module && @py_type.module.py_get(:__name__) || '?'}.#{@py_type && @py_type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+      end
 
       # Default behaviour for object invocation. If there's an __call__
       # attribute we defer to it, otherwise we blow up
@@ -183,11 +187,14 @@ module Typhon
       end
 
       def inspect()
-        "<#{@py_type && @py_type.module && @py_type.module.py_get(:__name__) || '?'}.#{@py_type && @py_type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+        py_instance_string
       end
 
-      def to_s
-        inspect
+      alias :to_s :inspect
+      alias :to_str :inspect
+      
+      def to_py
+        return self
       end
     end
   end

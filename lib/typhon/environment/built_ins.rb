@@ -28,11 +28,7 @@ module Typhon
 
     def self.__py_print_to(out, *args)
       args = args.map do |a|
-        if a.respond_to?(:to_py)
-          a.to_py.py_get(:__str__).invoke
-        else
-          a.to_s
-        end
+        PythonString.new(a)
       end
       out.print(args.join(' ') + "\n")
     end

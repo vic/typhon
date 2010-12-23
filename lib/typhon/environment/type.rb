@@ -76,8 +76,14 @@ module Typhon
           def bases; @bases; end
           def method_resolve_order; @mro; end
 
-          def inspect()
-            "<type '#{@name}' at 0x#{object_id.to_s(16)}>"
+          def nice_type_string()
+            # stuff in the BuiltInModule seems to be considered types,
+            # everything else classes.
+            if (@mod && @mod == BuiltInModule)
+              "<type '#{@name}'>".to_py
+            else
+              "<class '#{@mod && @mod.py_get(:__name__).to_s+'.'}#{@name}'>".to_py
+            end
           end
 
           # Creates a new class with +name+ deriving from self
@@ -179,9 +185,24 @@ module Typhon
           self
         end
       end
-
+      
       python_method(:mro) do |c|
         c.calculate_mro(true)
+      end
+      
+      python_method(:__str__) do |on|
+        if (on.py_type == Type)
+          on.nice_type_string
+        else
+          on.py_instance_string
+        end
+      end
+      python_method(:__repr__) do |on|
+        if (on.py_type == Type)
+          on.nice_type_string
+        else
+          on.py_instance_string
+        end
       end
     end
   end
