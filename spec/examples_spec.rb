@@ -1,8 +1,8 @@
 require 'open3'
 
-base = File.expand_path("../..", File.dirname(__FILE__))
+base = File.expand_path("..", File.dirname(__FILE__))
 
-Dir.glob(File.expand_path("*.out", File.dirname(__FILE__))) do |file|
+Dir.glob(File.expand_path("**/*.out", File.dirname(__FILE__))) do |file|
 
   content = File.read file
   m = /#!\s*typhon\s+(.*)$/.match(content)
