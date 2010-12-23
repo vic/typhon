@@ -185,11 +185,11 @@ module Typhon
           self
         end
       end
-      
+
       python_method(:mro) do |c|
         c.calculate_mro(true)
       end
-      
+
       python_method(:__str__) do |on|
         if (on.py_type == Type)
           on.nice_type_string
@@ -197,6 +197,7 @@ module Typhon
           on.py_instance_string
         end
       end
+
       python_method(:__repr__) do |on|
         if (on.py_type == Type)
           on.nice_type_string
