@@ -89,8 +89,8 @@ Main repository is located at [http://github.com/vic/typhon](http://github.com/v
 report any issues you find there.
 
 The Typhon developers hang out in the
-[#typhon-rbx](irc://freenode.org/#typhon-rbx) IRC channel on
-[freenode](http://webchat.freenode.net?nick=snake%23%23%23%23&channels=typhon-rb)
+[#typhon-rbx](irc://irc.freenode.net/typhon-rbx) IRC channel on
+[freenode](http://webchat.freenode.net?nick=snake%23%23%23%23&channels=typhon-rbx)
 network.
 If more people gets interested we might start a mailing-list.
 
