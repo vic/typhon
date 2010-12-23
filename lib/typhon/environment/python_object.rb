@@ -31,7 +31,7 @@ module Typhon
         def py_data_descriptor; false; end
       end
 
-      def py_init(type, merge_attrs = {}, *args)
+      def py_init(type, merge_attrs = {}, *args, &block)
         @py_cache = {}
         @py_from_module = Typhon::Environment.get_python_module
         @py_type = type
@@ -40,7 +40,7 @@ module Typhon
         }
         @py_attributes[:__dict__] = DictWrapper.new(@py_attributes)
         merge_attrs.each {|k,v| @py_attributes[k]=v }
-        instance_eval(&Proc.new) if block_given?
+        instance_eval(&block) if block
       end
 
       def py_reset_type(new_type)
@@ -132,7 +132,7 @@ module Typhon
       def py_del(name)
         @py_attributes.delete(name)
       end
-      
+
       def py_send(method, *args)
         py_get(method).invoke(*args)
       end
@@ -143,7 +143,7 @@ module Typhon
         py_send(:__call__, *args)
       end
     end
-    
+
     # Defines a mixin that can be used on things like Integer that is
     # essentially read only and provides very few traits. It turns the
     # class (as opposed to the object) into a PythonObject and returns
@@ -153,7 +153,7 @@ module Typhon
       def self.included(o)
         o.extend(PythonObjectMixin)
       end
-      
+
       def py_type?; false; end
       def py_descriptor; nil; end
       def py_data_descriptor; nil; end
@@ -164,10 +164,10 @@ module Typhon
       def py_send(name, *args); self.class.py_get(name, :with_self => self).invoke(*args); end
       def py_cache; self.class.py_cache; end
     end
-    
+
     class PythonObject
       include PythonObjectMixin
-      
+
       def initialize(*args, &block)
         py_init(*args, &block)
       end
