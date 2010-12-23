@@ -16,8 +16,6 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        
-        
         @nodes.each do |node|
           node.bytecode(g)
         end
@@ -30,9 +28,6 @@ module Typhon
       def bytecode(g)
         pos(g)
         
-        
-        
-        g.push_literal()
         @nodes.each do |node|
           node.bytecode(g)
         end
