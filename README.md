@@ -98,14 +98,9 @@ Here's the plan as its currently in my head:
   output. We're into it. Anyways ensuring all the files under
   examples/ work is always a good-thing(tm).
 
-- Investigate if we pypy has a Python parser in Python,
-if so, we could use that once we compile python programs
-to teplace the sexp-script.
-
-  Im in search of a nice Python parser that can be implemented
-  in Ruby or used as a c-extension. Right now, we use a simple
-  Python script that outputs a program AST using Ruby literals
-  then feed that to the Typhon compiler to produce Rubinius asm
+- Investigate if the pypy project has a Python parser in Python,
+  if so, we could use that once we compile python programs
+  to replace the bin/pyparse.py script.
 
 - Bootstrap. write the Typhon compiler in Python.
 
@@ -129,12 +124,13 @@ accepted you get commit bit.
 Set your editor to use soft-tabs at two spaces for ruby code, no
 hard-tabs for python code.
 Configure your editor to automatically remove trailing whitespace and
-keep an empty new-line at the end of file.
+be sure to leave an empty new-line at the end of file.
 
 Try keep source code as readable as possible, that is, use proper
-indentation, spaces between method definitions, skip parens in ruby
-where it makes sense (most if expressions), add source comments and TODO
-tags if needed.
+indentation, an empty new-line between method definitions, skip parens in ruby
+where it makes sense (most if expressions), add source comments with
+links to python design/algorithm documents if applicable, add
+TODO/FIXME tags if needed.
 
 ## Logo
 
@@ -153,7 +149,7 @@ skills, we would like to hear from you.
 
 ## About Typhon
 
-  The name was chosen as a funny anagram of Python.
+  The name was chosen as an anagram of Python.
 
   In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures.
 
