@@ -10,6 +10,10 @@ module Typhon
     end
 
     class StmtNode < ClosedScope
+      def discard?
+        @nodes.last.kind_of? DiscardNode
+      end
+
       def bytecode(g)
         pos(g)
         @nodes.each do |node|
@@ -19,8 +23,9 @@ module Typhon
       end
     end
 
-    class PassNode
+    class PassNode < Node
       def bytecode(g)
+        pos(g)
         g.push_nil
       end
     end

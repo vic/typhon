@@ -1,0 +1,3 @@
+#! typhon examples/from_import.py
+imported
+FOO

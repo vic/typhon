@@ -11,7 +11,7 @@ module Typhon
         pos(g)
 
         @statement.bytecode(g)
-        g.pop
+        g.pop unless @statement.discard?
         g.push_self
       end
     end
@@ -63,6 +63,22 @@ module Typhon
           g.swap
           g.send :py_set, 2
         end
+      end
+    end
+
+    class FromNode < Node
+      def bytecode(g)
+        pos(g)
+        g.push_const :Typhon
+        g.find_const :CodeLoader
+        g.push_literal @modname
+        g.push_self
+        @names.each do |pair|
+          g.push_literal pair.first.to_sym
+          g.push_literal(pair.last && pair.last.to_sym)
+        end
+        g.make_array(@names.size * 2)
+        g.send :import_from_module, 3
       end
     end
 

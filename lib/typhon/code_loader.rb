@@ -52,6 +52,15 @@ module Typhon
       end
     end
 
+    # Import +names+ from the +modname+ module into module +into+.
+    def self.import_from_module(modname, into, names)
+      names = Hash[*names] unless names.kind_of? Hash
+      mod = load_module(modname, into)
+      names.each do |key, as|
+        into.py_set((as || key).to_sym, mod.py_get(key.to_sym))
+      end
+    end
+
   end
 
 end

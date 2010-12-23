@@ -33,7 +33,7 @@ module Typhon
       end
 
       python_method(:__repr__) do |s|
-        s.inspect
+        "\"#{s.gsub('"', '\"')}\""
       end
     end
 
