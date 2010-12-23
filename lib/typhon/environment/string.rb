@@ -8,15 +8,15 @@ module Typhon
           obj = obj.to_py
           case obj.py_type
           when Type
-            # python appears to ignore __str__ on type objects, 
+            # python appears to ignore __str__ on type objects,
             # otherwise a type that defined __str__ for its instances
             # couldn't be represented because types and their instances
             # share a namespace.
-            obj = obj.nice_type_string 
+            obj = obj.nice_type_string
           end
           obj = obj.py_send(:__str__)
         end
-        super(obj)
+        super(obj.to_s)
         py_init(PythonStringClass)
       end
 
