@@ -31,15 +31,19 @@ Maybe Rubinius VM does what Parrot was originally intended to.
 
      # Set rubinius as your current ruby.
      $ rvm use rbx
+
      # Compile the hello world example
      $ ./bin/typhon examples/hello.py
 
+     # If you want to run all the specs
+     $ rake spec
+
 ## Status
 
-  Im in search of a nice Python parser that can be implemented
-  in Ruby or used as a c-extension. Right now, we use a simple
-  Python script that outputs a program AST using Ruby literals
-  then feed that to the Typhon compiler to produce Rubinius asm
+  We have many simple python programs in the examples/ directory
+  that run successfully. Of course there might be a lot of things
+  missing, but that's were we need your help. Add an example, report
+  an issue, or even better, submit a patch or pull request.
 
 ## Roadmap
 
@@ -66,7 +70,7 @@ Here's the plan as its currently in my head:
 - Write the Typhon compiler in Ruby, taking advantage of
  Rubinius' compiler infrastructure.
 
-  IN PROGRESS.
+  DONE.
 
   We have Rubinius compiler stages at rbx/compiler/stages.rb
   Currently the parsing stage simply uses pyparse.py and
@@ -75,11 +79,33 @@ Here's the plan as its currently in my head:
 
 - Have the Typhon compiler produce Rubinius bytecode.
 
+  IN PROGRESS.
+
+  We add bytecode methods to AST nodes as they are being used.
+
 - Lots of tests.
+
+  IN PROGRESS.
+
+  Currently we use the scripts from examples/ directory to test
+  that `typhon` and `python` programs produce the same output.
+
+  Try running the example specs with
+
+    $ mspec spec/examples/examples_spec.rb
+
+  Of course we need more specs without having to rely on stdout
+  output. We're into it. Anyways ensuring all the files under
+  examples/ work is always a good-thing(tm).
 
 - Investigate if we pypy has a Python parser in Python,
 if so, we could use that once we compile python programs
 to teplace the sexp-script.
+
+  Im in search of a nice Python parser that can be implemented
+  in Ruby or used as a c-extension. Right now, we use a simple
+  Python script that outputs a program AST using Ruby literals
+  then feed that to the Typhon compiler to produce Rubinius asm
 
 - Bootstrap. write the Typhon compiler in Python.
 
@@ -97,6 +123,20 @@ If more people gets interested we might start a mailing-list.
 Typhon is on its early days, if you want to help, you're more than welcome.
 We follow the same commit bit policy than Rubinius and Pugs, if you get your first patch
 accepted you get commit bit.
+
+## Coding conventions.
+
+Set your editor to use soft-tabs at two spaces for ruby code, no
+hard-tabs for python code.
+Configure your editor to automatically remove trailing whitespace and
+keep an empty new-line at the end of file.
+
+Try keep source code as readable as possible, that is, use proper
+indentation, spaces between method definitions, skip parens in ruby
+where it makes sense (most if expressions), add source comments and TODO
+tags if needed.
+
+## Logo
 
 We need a logo, but i'm really bad at design stuff, so if you
 have designing skills, I'd been thinking a cool logo for
