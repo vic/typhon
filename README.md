@@ -113,7 +113,7 @@ skills, we would like to hear from you.
 
 ## About Typhon
 
-  The name was choosen as a funny anagram of Python.
+  The name was chosen as a funny anagram of Python.
 
   In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures.
 
