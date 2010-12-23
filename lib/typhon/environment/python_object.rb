@@ -114,7 +114,7 @@ module Typhon
         py_del(name) # make sure it clears any cached method invocation.
         py_type.find(name) do |p|
           at = p.py_attributes[name]
-          if desc = p.py_data_desciptor
+          if (desc = p.py_data_descriptor)
             desc.py_attributes[:__set__].py_invoke(at, self, val)
             return val
           end
@@ -127,7 +127,7 @@ module Typhon
       def py_lookup(name, *backups)
         begin
           return self.py_get(name)
-        rescue NameError
+        rescue AttributeError
           return backups.shift.py_lookup(name, *backups) if !backups.empty?
         end
         raise AttributeError.new("Unknown attribute #{name} on #{self}".to_py)
