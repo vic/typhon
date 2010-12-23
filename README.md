@@ -10,7 +10,7 @@ Just For Fun!.
 
 Python is one of the most popular dynamic languagues out there,
 it has many projects made on it and has an outstanding number of
-libraries available. 
+libraries available.
 So I guess having an implementation for it on Rubinius would make
 Rubinius an strong player on VM field.
 
@@ -86,25 +86,38 @@ to teplace the sexp-script.
 ## Contributing
 
 Main repository is located at [http://github.com/vic/typhon](http://github.com/vic/typhon)
-report any issues you find there. 
+report any issues you find there.
 
-If more people gets interested we might start a mailing-list and freenode channel.
+The Typhon developers hang out in the
+[#typhon-rbx](irc://freenode.org/#typhon-rbx) IRC channel on
+[freenode](http://webchat.freenode.net?nick=snake%23%23%23%23&channels=typhon-rb)
+network.
+If more people gets interested we might start a mailing-list.
 
 Typhon is on its early days, if you want to help, you're more than welcome.
-We follow the same commit bit policy than Rubinius and Pugs, if you get your first patch 
+We follow the same commit bit policy than Rubinius and Pugs, if you get your first patch
 accepted you get commit bit.
 
 We need a logo, but i'm really bad at design stuff, so if you
 have designing skills, I'd been thinking a cool logo for
 Typhon could be a tornado of two or three little Python snakes :)
 
+[@victor_g5](http://twitter.com/victor_g5) has proposed mixing the
+[Python
+logo](http://www.python.org/community/logos/python-logo-generic.svg)
+and [Rubinius
+logo](http://www.flickr.com/photos/veganstraightedge/2917525709/sizes/o/in/photostream/)s
+to come with a nice Typhon logo. [Here's an sketch of
+it](http://imgur.com/qkmlk) so if you like the idea and have designer
+skills, we would like to hear from you.
+
 ## About Typhon
 
   The name was choosen as a funny anagram of Python.
 
-  In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures. 
+  In greek mithology, [Typhon](http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm) is one of the largest and most fearsome of all creatures.
 
-  Theres a cool t-shirt showing what Typhon is all about: 
+  Theres a cool t-shirt showing what Typhon is all about:
   [snakes on rbx-head](http://twinsrpnt.com/blog/?p=180)
 
 ## License
