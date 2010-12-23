@@ -183,7 +183,7 @@ module Typhon
       end
 
       def inspect()
-        "<#{@type && @type.module && @type.module[:__name__] || '?'}.#{@type && @type.name || '?'} object at 0x#{object_id.to_s(16)}>"
+        "<#{@py_type && @py_type.module && @py_type.module.py_get(:__name__) || '?'}.#{@py_type && @py_type.name || '?'} object at 0x#{object_id.to_s(16)}>"
       end
 
       def to_s
