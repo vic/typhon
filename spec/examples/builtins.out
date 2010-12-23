@@ -1,0 +1,4 @@
+#! typhon examples/builtins.py
+__main__
+wat
+<type 'object'>

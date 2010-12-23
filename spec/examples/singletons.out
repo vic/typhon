@@ -1,0 +1,5 @@
+#! typhon examples/singletons.py
+None
+<type 'NoneType'>
+NotImplemented
+<type 'NotImplementedType'>

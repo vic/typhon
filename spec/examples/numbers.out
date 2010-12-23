@@ -1,0 +1,9 @@
+#! typhon examples/numbers.py
+boom
+<type 'int'> <type 'long'> <type 'int'>
+11
+9995
+10000000000
+1000000000000000
+10000000100
+shackalacka

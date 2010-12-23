@@ -1,0 +1,16 @@
+#! typhon examples/func.py
+---
+hello Jack
+wat: stuff
+blorp: woop
+zoop: noop
+---
+hello Jill
+wat: cffuf
+blorp: tuff
+zoop: noop
+---
+hello Bob
+wat: wat
+blorp: woop
+zoop: noop

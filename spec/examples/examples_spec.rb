@@ -9,9 +9,17 @@ Dir.glob(File.expand_path("*.out", File.dirname(__FILE__))) do |file|
   next unless m
   cmd = m[1]
   content = content.sub(/.*?\n/, '')
-  expect = Regexp.new(Object.new.instance_eval content.inspect)
 
-  describe "Example output of typhon #{cmd}" do
+  # Allow regexp literals inside the file content so we can match
+  # things like memory addresses or anything that can vary
+  content = content.gsub('(', '\(').gsub(')', '\)').
+            inspect.gsub(/\\#\{\/(.*?)\/\}/) do |regex|
+    regex[1..-1].gsub('\\\\', '\\')
+  end
+
+  expect = Regexp.new(Object.new.instance_eval content)
+
+  describe "Example output of `typhon #{cmd}`" do
     it "should match content of #{file}" do
       stdio = nil
       Dir.chdir base do
@@ -22,7 +30,7 @@ Dir.glob(File.expand_path("*.out", File.dirname(__FILE__))) do |file|
     end
   end
 
-  describe "Example output of python #{cmd}" do
+  describe "Example output of `python #{cmd}`" do
     it "should match content of #{file}" do
       stdio = nil
       Dir.chdir base do

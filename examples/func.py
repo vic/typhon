@@ -7,4 +7,3 @@ def greet(name, wat, blorp = 'woop', zoop = 'noop'):
 greet('Jack', 'stuff')
 greet('Jill', 'cffuf', 'tuff')
 greet('Bob', 'wat')
-greet()

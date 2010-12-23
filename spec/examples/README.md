@@ -29,4 +29,4 @@ program. Because of this all tests run with `typhon` will be also run
 with `python` and the output is expected to be equal.
 
 Also, some examples output memory locations like 0x0AF30 in that cases
-.out files can use ruby regexes like: #{/0x\d+/}.
+.out files can use ruby regexes like: #{/0x\w+/}.
