@@ -26,11 +26,10 @@ DOC
         end
 
         def to_s
-          self[:__str__].invoke
+          self.py_send(:__str__)
         end
-
         def inspect
-          self[:__repr__].invoke
+          self.py_send(:__repr__)
         end
       end
 
@@ -43,11 +42,11 @@ DOC
         end
 
         python_method(:__repr__) do |s|
-          "#{s[:__name__]}#{s[:args][:__repr__].invoke}"
+          "#{s.py_type.name}#{s.py_get(:args).inspect}"
         end
 
         python_method(:__str__) do |s|
-          s[:args]
+          s.py_get(:args)
         end
       end
 
