@@ -112,7 +112,7 @@ module Typhon
             return val
           end
         end
-        return @py_attributes[name] = val
+        @py_attributes[name] = val
       end
       # like [] except it allows you to specify a set of other objects to look in as well.
       # Used for module scope lookups.
@@ -159,8 +159,9 @@ module Typhon
       def py_data_descriptor; nil; end
       def py_invoke(*args); raise TypeError.new("Can't invoke an singleton object of type #{type}"); end
       def py_type; self.class.py_type; end
-      def py_get(name); self.class[name, {:with_self => self}]; end
+      def py_get(name); self.class.py_get(name, :with_self => self); end
       def py_set(name, val); raise AttributeError.new("Can't set attributes on singleton object of type #{type}"); end
+      def py_send(name, *args); self.class.py_get(name, :with_self => self).invoke(*args); end
       def py_cache; self.class.py_cache; end
     end
     

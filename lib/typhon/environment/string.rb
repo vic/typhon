@@ -7,14 +7,14 @@ module Typhon
         if (obj.is_a?(String))
           s = obj
         else
-          s = obj.to_py[:__str__].invoke
+          s = obj.to_py.py_get(:__str__).invoke
         end
         super(s)
         py_init(PythonStringClass)
       end
       
       def inspect()
-        self[:__repr__].invoke()
+        self.py_send(:__repr__)
       end
     end
     
