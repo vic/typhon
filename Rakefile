@@ -10,6 +10,7 @@ end
 desc "Clean generated files"
 task :clean do
   rm_f FileList["**/*.{pyc,rbc}"]
+  rm_rf FileList["pkg"]
 end
 
 task :build
@@ -27,20 +28,19 @@ spec = Gem::Specification.new do |s|
   s.date                      = %q{2010-12-18}
   s.email                     = %q{vic.borja@gmail.com}
   s.has_rdoc                  = true
-  s.extra_rdoc_files          = %w[ README LICENSE ]
+  s.extra_rdoc_files          = %w[ README.md ]
   s.executables               = ["typhon"]
   s.files                     = FileList[ '{bin,lib,spec}/**/*.{yaml,txt,rb}', 'Rakefile', *s.extra_rdoc_files ]
   s.homepage                  = %q{http://github.com/vic/typhon}
   s.require_paths             = ["lib"]
   s.rubygems_version          = %q{1.3.5}
-  s.summary                   = "Typhon is Python implementation for the Rubinius VM."
+  s.summary                   = "A Python implementation for the Rubinius VM."
   s.description               = <<EOS
-Typhon is a Python implementation
-that runs on the Rubinius VM.
+Typhon is a Python implementation that runs on the Rubinius VM.
 EOS
 
-  s.rdoc_options << '--title' << 'Typhon Gem' <<
-                    '--main' << 'README' <<
+  s.rdoc_options << '--title' << 'Typhon: snakes on rubinius head' <<
+                    '--main' << 'README.md' <<
                     '--line-numbers'
   s.add_dependency 'mspec', '~> 1.5.0'
 end
