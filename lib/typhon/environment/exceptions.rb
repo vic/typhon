@@ -20,21 +20,23 @@ DOC
         end
 
         def initialize(*args)
-          super(args[0])
+          super(args.first)
           @args = args
           py_init(self.class.factory, {:args => args, :message => ''.to_py})
         end
 
-        def to_s()
+        def to_s
           self[:__str__].invoke
         end
-        def inspect()
+
+        def inspect
           self[:__repr__].invoke
         end
       end
 
       python_class_c :BaseExceptionClass, [ObjectBase], 'BaseException', 'Common base class for all exceptions' do
         extend FunctionTools
+
         python_class_method(:__new__) do |c, *args|
           klass = c.py_cache[:derived_exception] || BaseException
           klass.new(*args)
@@ -43,10 +45,12 @@ DOC
         python_method(:__repr__) do |s|
           "#{s[:__name__]}#{s[:args][:__repr__].invoke}"
         end
+
         python_method(:__str__) do |s|
           s[:args]
         end
       end
+
       ExceptionsModule.py_set(:BaseException, BaseExceptionClass)
       BuiltInModule.py_set(:BaseException, BaseExceptionClass)
 

@@ -5,7 +5,7 @@ module Typhon
       def invoke(cm = nil, scope = nil, &block)
         PythonObject.new(Function) do
           self.py_set(:__call__, self)
-          if (cm)
+          if cm
             Rubinius.attach_method(:invoke, cm, scope, self)
           else
             metaclass.send(:define_method, :invoke, &block)
@@ -50,7 +50,7 @@ module Typhon
 
       python_method(:__get__) do |s, obj|
         c = s.py_cache
-        if (!c[:func] || c[:obj] != obj)
+        if !c[:func] || c[:obj] != obj
           c[:func] = BoundFunction.new(s.py_get(:__func__), c[:obj] = obj)
         end
         c[:func]
@@ -66,7 +66,7 @@ module Typhon
 
       python_method(:__get__) do |s, obj, type|
         c = s.py_cache
-        if (!c[:func] || c[:type] != type)
+        if !c[:func] || c[:type] != type
           c[:func] = BoundFunction.new(s.py_get(:__func__), c[:type] = type)
         end
         c[:func]
@@ -90,7 +90,7 @@ module Typhon
 
       python_method(:__get__) do |s, obj, type|
         c = s.py_cache
-        if (!c[:func] || c[:obj] != (obj || type))
+        if !c[:func] || c[:obj] != (obj || type)
           c[:func] = BoundFunction.new(s, c[:obj] = (obj || type))
         end
         c[:func]

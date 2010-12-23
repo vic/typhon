@@ -7,9 +7,11 @@ module Typhon
       "top level expressions are executed on this context." do
 
       extend FunctionTools
+
       # Initializes a new Python module object with +parent+ and
       # +name+. +name+ defaults to __main__, the main object scope.
       # +doc+ is a docstring if there was one, should be '' otherwise.
+      # +filename+ is the absolute pathname of the .py file loaded.
       python_method(:__init__) do |s, parent, name, doc, filename|
         s.py_set(:__parent__, parent)
         s.py_set(:__name__, name)
@@ -26,6 +28,7 @@ module Typhon
         Thread.current[:python_module], m = m, Thread.current[:python_module]
       end
     end
+
     def self.get_python_module()
       Thread.current[:python_module]
     end
