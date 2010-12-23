@@ -10,12 +10,7 @@ module Typhon
       def bytecode(g)
         pos(g)
 
-        if @statement.empty?
-          g.push_nil
-        else
-          @statement.bytecode(g)
-        end
-
+        @statement.bytecode(g)
         g.pop
         g.push_self
       end

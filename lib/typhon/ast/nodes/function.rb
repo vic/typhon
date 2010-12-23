@@ -2,6 +2,7 @@ module Typhon
   module AST
     class Arguments
       attr_reader :argnames, :defaults
+
       def initialize(argnames, defaults)
         @argnames = argnames
         @defaults = defaults
@@ -10,9 +11,11 @@ module Typhon
       def required_args
         @argnames.length - @defaults.length
       end
+
       def total_args
         @argnames.length
       end
+
       def splat_index
         nil
       end
@@ -29,13 +32,13 @@ module Typhon
         end
       end
     end
-    
+
     class ModuleArguments < Arguments
       def bytecode(g)
         @argnames.each do |name|
           g.state.scope.new_local(name.to_sym)
         end
-        
+
         args_done = g.new_label
         # push missing default arguments until we hit one that's present.
         # note: this is probably not the most efficient way to do it, but it
@@ -51,7 +54,7 @@ module Typhon
         args_done.set!
       end
     end
-      
+
     class BlockArguments < Arguments
       def bytecode(g)
         return if (total_args == 0)
@@ -106,12 +109,12 @@ module Typhon
         g.pop # clear the array off the stack.
       end
     end
-    
+
     class ExecutableNode < ClosedScope
       include Compiler::LocalVariables
-      
+
       attr_reader :parent
-      
+
       def compile_body(g, auto_return = false)
         if (@name)
           meth = new_generator(g, @name.to_sym, @arguments)
@@ -154,7 +157,7 @@ module Typhon
         return meth
       end
     end
-    
+
     class DecoratorsNode < Node
       def bytecode(g)
         @nodes.each do |decorator|
@@ -164,27 +167,27 @@ module Typhon
         end
       end
     end
-      
-    class FunctionNode < ExecutableNode 
+
+    class FunctionNode < ExecutableNode
       def bytecode(g)
         pos(g)
-        
+
         case g.state.scope
         when ModuleNode, ClassNode
           @arguments = ModuleArguments.new(@argnames, @defaults)
 
           g.push_self
           g.push_literal(@name.to_sym)
-          
+
           g.push_const(:Function)
           g.push_generator(compile_body(g, false))
           g.push_scope
           g.send(:new, 2)
           @decorators.bytecode(g) if @decorators
-          
+
           g.send(:py_set, 2)
-          
-        when FunctionNode 
+
+        when FunctionNode
           @arguments = BlockArguments.new(@argnames, @defaults)
 
           g.push_const(:Function)
@@ -196,19 +199,19 @@ module Typhon
         end
       end
     end
-    
+
     class LambdaNode < ExecutableNode
       def bytecode(g)
         pos(g)
-        
+
         @arguments = BlockArguments.new(@argnames, @defaults)
-        
+
         g.push_const(:Function)
         g.create_block(compile_body(g, true))
         g.send_with_block(:new, 0)
       end
     end
-    
+
     class ReturnNode < Node
       def bytecode(g)
         if (@value)
@@ -241,7 +244,7 @@ module Typhon
 
       def bytecode(g)
         pos(g)
-        
+
         # evaluate the name into an object we can call
         # and then pass off to invoke() to do the actual work.
         @node.bytecode(g)

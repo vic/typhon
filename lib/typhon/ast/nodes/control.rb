@@ -10,15 +10,18 @@ module Typhon
     end
 
     class StmtNode < ClosedScope
-      def empty?
-        @nodes.empty?
-      end
-
       def bytecode(g)
         pos(g)
         @nodes.each do |node|
           node.bytecode(g)
         end
+        g.push_nil if @nodes.empty?
+      end
+    end
+
+    class PassNode
+      def bytecode(g)
+        g.push_nil
       end
     end
   end
