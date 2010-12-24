@@ -17,6 +17,13 @@ module Typhon
         require 'debugger'
         Debugger.start
       end
+
+      python_method(:eval) do |code|
+        bnd = Binding.setup(Rubinius::VariableScope.of_sender,
+                            Rubinius::CompiledMethod.of_sender,
+                            Rubinius::StaticScope.of_sender)
+        CodeLoader.execute_code code, bnd, py_from_module
+      end
     end
 
     # stuff that was defined before this needs to be changed

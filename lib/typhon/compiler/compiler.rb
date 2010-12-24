@@ -28,7 +28,7 @@ module Typhon
 
       parser.input file
 
-      compiler.generator.root Rubinius::AST::Script
+      compiler.generator.root = Rubinius::AST::Script
       compiler.writer.name = output || compiled_filename(file)
 
       parser.print = print
@@ -41,7 +41,22 @@ module Typhon
       end
     end
 
-    class Error < StandardError
+    def self.compile_for_eval(code, variable_scope, file = "(eval)", line = 0, print = Print.new)
+      compiler = new :typhon_code, :compiled_method
+      parser = compiler.parser
+
+      parser.input code, file, line
+      compiler.generator.root = Rubinius::AST::EvalExpression
+      compiler.generator.variable_scope = variable_scope
+
+      parser.print = print
+      compiler.packager.print.bytecode = true if print.asm?
+
+      begin
+        compiler.run
+      rescue Exception => e
+        compiler_error "Error trying to compile python: #{file}", e
+      end
     end
 
     class Print < Struct.new(:sexp, :ast, :asm)

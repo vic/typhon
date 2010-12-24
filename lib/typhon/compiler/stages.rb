@@ -10,17 +10,13 @@ module Typhon
     # simply calls the bytecode method on them.
     class Generator < Rubinius::Compiler::Stage
       next_stage Rubinius::Compiler::Encoder
-      attr_accessor :variable_scope
+      attr_accessor :variable_scope, :root
 
       def initialize(compiler, last)
         super
         @compiler = compiler
         @variable_scope = nil
         compiler.generator = self
-      end
-
-      def root(root)
-        @root = root
       end
 
       def run
@@ -37,10 +33,40 @@ module Typhon
 
     end
 
+    # AST trasnformation for evaling source string.
+    #
+    # This stage removes the ModuleNode from root of AST tree if
+    # the code being compiled is going to be used for eval. We remove
+    # the module, because in eval we must not return the module object
+    # Also if the last statement is a DiscardNode, we replace it with
+    # its inner expression, in order to return a value.
+    #
+    # If the source is not being compiled for eval, then output is
+    # the same AST given as input.
+    class EvalExpr < Rubinius::Compiler::Stage
+      next_stage Generator
+
+      def initialize(compiler, last)
+        @compiler = compiler
+        super
+      end
+
+      def run
+        @output = @input
+        if @compiler.generator.root == Rubinius::AST::EvalExpression
+          @output = @output.node # drop top module node, only use stmt
+          if @output.nodes.last.kind_of?(AST::DiscardNode)
+            @output.nodes[-1] = @output.nodes.last.expr
+          end
+        end
+        run_next
+      end
+    end
+
     # This stage takes a ruby array as produced by bin/astpretty.py
     # and produces a tree of Typhon::AST nodes.
     class PyAST < Rubinius::Compiler::Stage
-      next_stage Generator
+      next_stage EvalExpr
 
       def initialize(compiler, last)
         @compiler = compiler
