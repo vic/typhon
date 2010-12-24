@@ -1,3 +1,5 @@
+require 'typhon/version'
+
 module Typhon
 
   # Command line interface to Typhon.
@@ -19,9 +21,9 @@ module Typhon
 
     def main(argv=ARGV)
       options(argv)
+      return repl if @rest.empty? && @evals.empty? && !@compile_only
       evals unless @evals.empty?
-      script unless @compile_only || @rest.empty?
-      repl if !@compile_only && @rest.empty?
+      script unless @rest.empty?
       compile if @compile_only
     end
 
@@ -38,7 +40,13 @@ module Typhon
 
     # Evaluate code given on command line
     def evals
-      raise "Eval not implemented yet."
+      bnd = Object.new
+      def bnd.get; binding; end
+      bnd = bnd.get
+      mod = Environment::PythonModule.new(nil, :__eval__, "Eval expression", "(eval)")
+      @evals.each do |code|
+        CodeLoader.execute_code code, bnd, mod, @print
+      end
     end
 
     # Run the given script if any
@@ -48,7 +56,8 @@ module Typhon
 
     # Run the Typhon REPL unless we were given an script
     def repl
-      raise "REPL not implemented yet"
+      require 'typhon/repl'
+      ReadEvalPrintLoop.new.main(@print)
     end
 
     # Parse command line options
@@ -86,6 +95,16 @@ module Typhon
 
       options.on "-e", "CODE", "Execute CODE" do |e|
         @evals << e
+      end
+
+      options.on "-V", "Print Python version and exit" do
+        puts VERSION.python_string
+        exit 0
+      end
+
+      options.on "--version", "Print version and exit" do
+        puts VERSION.full_string
+        exit 0
       end
 
       options.on "-h", "--help", "Display this help" do

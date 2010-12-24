@@ -18,8 +18,7 @@ module Typhon
       cm
     end
 
-    def self.execute_code(code, binding, from_module)
-      print = Compiler::Print.new
+    def self.execute_code(code, binding, from_module, print = Compiler::Print.new)
       cm = pythonize_literals(Compiler.compile_for_eval(code, binding.variables,
                                                         "(eval)", 1, print))
       cm.scope = binding.static_scope.dup
