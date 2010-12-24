@@ -65,8 +65,10 @@ module Typhon
     end
 
     def rbx_string
-      "Rubinius #{Rubinius::VERSION} (#{ruby_version(:tiny)} "+
-        "#{Rubinius::BUILD_REV[0..7]} #{Rubinius::RELEASE_DATE})"
+      "Rubinius #{Rubinius::VERSION} ("+
+        "#{Rubinius::BUILD_REV[0..7]} "+
+        "Ruby #{ruby_version(:tiny)} "+
+        "#{Rubinius::RELEASE_DATE})"
     end
   end
 end
