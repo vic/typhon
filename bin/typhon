@@ -6,5 +6,9 @@ require 'typhon/code_loader'
 require 'typhon/environment'
 require 'typhon/main'
 
+# When running this script directly (ie, not using a gem installed typhon)
+# Set the compiler to always recompile python files. (devel-mode)
+Typhon::Compiler.always_recompile = $0 == __FILE__
+
 Typhon::Main.new.main ARGV
 
