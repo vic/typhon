@@ -28,7 +28,7 @@ module Typhon
 
       attr_reader :py_type
       attr_reader :py_attributes
-      attr_reader :py_from_module
+      attr_accessor :py_from_module
 
       # this is a hash that applies *only* to this
       # object, with no inheritance rules applied.
@@ -146,7 +146,7 @@ module Typhon
       def py_send(method, *args)
         py_get(method).invoke(*args)
       end
-      
+
       def py_instance_string()
         "<#{@py_type && @py_type.module && @py_type.module.py_get(:__name__) || '?'}.#{@py_type && @py_type.name || '?'} object at 0x#{object_id.to_s(16)}>"
       end
@@ -192,7 +192,7 @@ module Typhon
 
       alias :to_s :inspect
       alias :to_str :inspect
-      
+
       def to_py
         return self
       end

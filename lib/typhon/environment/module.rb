@@ -17,10 +17,7 @@ module Typhon
         s.py_set(:__name__, name)
         s.py_set(:__doc__, doc)
         s.py_set(:__file__, filename)
-      end
-
-      def py_module_from
-        return self
+        s.py_from_module = s
       end
     end
 
