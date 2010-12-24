@@ -57,7 +57,7 @@ module Typhon
     # Run the Typhon REPL unless we were given an script
     def repl
       require 'typhon/repl'
-      ReadEvalPrintLoop.new.main(@print)
+      ReadEvalPrintLoop.new(@print).main
     end
 
     # Parse command line options

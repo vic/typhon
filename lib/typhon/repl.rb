@@ -2,6 +2,11 @@ require 'readline'
 
 module Typhon
   class ReadEvalPrintLoop
+    def initialize(compiler_print = Compiler::Print.new, show_lineno = false)
+      @compiler_print = compiler_print
+      @show_lineno = show_lineno
+    end
+
     def prompt(lineno = 1, level = 1, print_line = false)
       line = ("%03i " % [line] if print_line).to_s
       prompt = if level > 1; "..."; else ">>>"; end
@@ -25,11 +30,11 @@ module Typhon
       lineno = 1
       level = 1
       header
-      while line = Readline.readline(prompt(lineno, level),true)
+      while line = Readline.readline(prompt(lineno, level), @show_lineno)
         Readline::HISTORY.pop() if double_or_empty?(line)
 
         begin
-          p CodeLoader.execute_code line, bnd, mod, print
+          p CodeLoader.execute_code line, bnd, mod, @compiler_print
         rescue => e
           puts e.message
         end
