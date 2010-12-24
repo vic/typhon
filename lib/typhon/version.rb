@@ -31,7 +31,7 @@ module Typhon
     end
 
     def typhon_string
-      "Typhon #{to_s} (#{commit}) \"#{codename}\""
+      "Typhon #{to_s} (#{commit} #{python_string}) \"#{codename}\""
     end
 
     def python_string
