@@ -89,7 +89,7 @@ module Typhon
         @print.ast = @print.asm = @print.sexp = true
       end
 
-      options.on "-C", "Just batch compile dont execute." do
+      options.on "-C", "--compile", "Just batch compile dont execute." do
         @compile_only = true
       end
 
