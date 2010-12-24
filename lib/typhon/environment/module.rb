@@ -18,6 +18,10 @@ module Typhon
         s.py_set(:__doc__, doc)
         s.py_set(:__file__, filename)
       end
+
+      def py_module_from
+        return self
+      end
     end
 
     def self.set_python_module(m, &block)

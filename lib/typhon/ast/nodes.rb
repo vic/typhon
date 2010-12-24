@@ -29,7 +29,7 @@ module Typhon
       rescue NameError
       end
       cls = cls || ::Class.new(BlowUpNode)
-      
+
       self.const_set(name_sym, cls)
       Nodes[name_sym] = cls
       names = ['line'] + attributes
@@ -43,9 +43,11 @@ module Typhon
       INIT
     end
 
-    Node = Rubinius::AST::Node
-    ClosedScope = Rubinius::AST::ClosedScope
-    
+    class Node < Rubinius::AST::Node
+    end
+    class ClosedScope < Rubinius::AST::ClosedScope
+    end
+
     class BlowUpNode < Node
       def bytecode(g)
         pos(g)
@@ -65,7 +67,7 @@ module Typhon
     ].each do |type|
       require 'typhon/ast/nodes/' + type
     end
-    
+
     # Nodes classes. Read from node.py
     nodes = eval File.read(File.expand_path("../../../bin/node.py", File.dirname(__FILE__)))
     nodes.each { |n| node n.first, *n.last }
