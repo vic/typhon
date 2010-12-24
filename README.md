@@ -32,11 +32,20 @@ Maybe Rubinius VM does what Parrot was originally intended to.
      # Set rubinius as your current ruby.
      $ rvm use rbx
 
-     # Compile the hello world example
+     # Get usage help
+     $ ./bin/typhon --help
+
+     # Run the hello world example
      $ ./bin/typhon examples/hello.py
 
      # If you want to run all the specs
      $ rake spec
+
+     # Try -C --print-all on your python script.
+     # This will most likely blow up and show you
+     # a hint of what is needed to be implemented. 
+     $ ./bin/typhon -C --print-all your_script.py
+
 
 ## Status
 
