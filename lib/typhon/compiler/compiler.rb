@@ -12,7 +12,7 @@ module Typhon
 
     def self.compile_if_needed(file, output = nil, print = Print.new)
       compiled = output || compiled_filename(file)
-      needed = !File.exists?(compiled) ||
+      needed = true || !File.exists?(compiled) ||
         File.stat(compiled).mtime < File.stat(file).mtime
       if needed
         compile_file(file, compiled, print)
