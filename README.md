@@ -1,4 +1,4 @@
-Typhon
+Snakes on Rubinius HEAD
 ======
 
   Typhon is a Python implementation for the Rubinius VM.
