@@ -30,7 +30,8 @@ module Typhon
       lineno = 1
       level = 1
       header
-      while line = Readline.readline(prompt(lineno, level), @show_lineno)
+      while line = Readline.readline(prompt(lineno, level, @show_lineno), true)
+
         Readline::HISTORY.pop() if double_or_empty?(line)
 
         begin
