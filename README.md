@@ -43,8 +43,12 @@ Maybe Rubinius VM does what Parrot was originally intended to.
 
      # Try -C --print-all on your python script.
      # This will most likely blow up and show you
-     # a hint of what is needed to be implemented. 
+     # a hint of what is needed to be implemented.
      $ ./bin/typhon -C --print-all your_script.py
+
+     # You can use the --print-all switches with
+     # the REPL like this:
+     $ ./bin/typhon --print-all
 
 
 ## Status
