@@ -171,7 +171,7 @@ skills, we would like to hear from you.
 
 ## License
 
-  BSD.
+  Modified BSD License. See LICENSE file.
 
 ## Contributors
 
