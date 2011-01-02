@@ -2,7 +2,7 @@ require 'rbconfig'
 
 module Typhon
 
-  module VERSION
+  module Version
     extend self
 
     attr_accessor :major, :minor, :tiny, :commit, :codename, :tagline

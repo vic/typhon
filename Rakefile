@@ -19,7 +19,7 @@ spec = Gem::Specification.new do |s|
   require File.expand_path('../lib/typhon/version', __FILE__)
 
   s.name                      = "typhon"
-  s.version                   = Typhon::VERSION.to_s
+  s.version                   = Typhon::Version.to_s
 
   s.specification_version     = 2 if s.respond_to? :specification_version=
 

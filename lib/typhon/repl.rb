@@ -15,7 +15,7 @@ module Typhon
     end
 
     def header
-      puts VERSION.full_string
+      puts Version.full_string
       puts 'Type "help", "copyright", "credits" or "license" for more information.'
     end
 

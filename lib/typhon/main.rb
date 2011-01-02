@@ -98,12 +98,12 @@ module Typhon
       end
 
       options.on "-V", "Print Python version and exit" do
-        puts VERSION.python_string
+        puts Version.python_string
         exit 0
       end
 
       options.on "--version", "Print version and exit" do
-        puts VERSION.full_string
+        puts Version.full_string
         exit 0
       end
 
