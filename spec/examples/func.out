@@ -1,4 +1,5 @@
 #! typhon examples/func.py
+#! python examples/func.py
 ---
 hello Jack
 wat: stuff

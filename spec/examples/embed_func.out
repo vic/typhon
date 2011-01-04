@@ -1,4 +1,5 @@
 #! typhon examples/embed_func.py
+#! python examples/embed_func.py
 zoom!
 ('floom', 'b')
 boom

@@ -1,2 +1,3 @@
 #! typhon examples/hello.py
+#! python examples/hello.py
 hello world

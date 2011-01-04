@@ -25,8 +25,11 @@ with two command line arguments, you should have the first line in the
 Files not having that comment as first line will just be ignored.
 
 Typhon is expected to be compatible as possible with the `python`
-program. Because of this all tests run with `typhon` will be also run
-with `python` and the output is expected to be equal.
+program. Because of this all tests run with `typhon` might also need
+to be run with `python` and the output is expected to be equal.
+
+     #! typhon examples/hello.py
+     #! python examples/hello.py
 
 Also, some examples output memory locations like `0x0AF30` in that cases
 .out files can use ruby regexes like: `#{/0x\w+/}`.

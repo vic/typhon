@@ -1,4 +1,5 @@
 #! typhon examples/singletons.py
+#! python examples/singletons.py
 None
 <type 'NoneType'>
 NotImplemented

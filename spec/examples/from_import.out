@@ -1,3 +1,4 @@
 #! typhon examples/from_import.py
+#! python examples/from_import.py
 imported
 FOO

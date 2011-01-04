@@ -1,4 +1,5 @@
 #! typhon examples/descriptors.py
+#! python examples/descriptors.py
 datadesc <__main__.DataDesc object at #{/0x\w+/}> None <class '__main__.test'>
 desc <__main__.Desc object at #{/0x\w+/}> None <class '__main__.test'>
 datadesc <__main__.DataDesc object at #{/0x\w+/}> <__main__.test object at #{/0x\w+/}> <class '__main__.test'>

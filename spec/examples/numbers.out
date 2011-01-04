@@ -1,4 +1,5 @@
 #! typhon examples/numbers.py
+#! python examples/numbers.py
 boom
 <type 'int'> <type 'long'> <type 'int'>
 11
