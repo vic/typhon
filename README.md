@@ -105,7 +105,7 @@ Here's the plan as its currently in my head:
 
   Try running the example specs with
 
-    $ mspec spec/examples/examples_spec.rb
+    $ mspec spec/examples_spec.rb
 
   Of course we need more specs without having to rely on stdout
   output. We're into it. Anyways ensuring all the files under
