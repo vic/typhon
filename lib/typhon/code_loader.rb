@@ -73,9 +73,32 @@ module Typhon
     # Import +names+ from the +modname+ module into module +into+.
     def self.import_from_module(modname, into, names)
       names = Hash[*names] unless names.kind_of? Hash
+      return import_from_ruby(modname, into, names) if modname =~ /^__ruby__/
       mod = load_module(modname, into)
       names.each do |key, as|
         into.py_set((as || key).to_sym, mod.py_get(key.to_sym))
+      end
+    end
+
+    def self.import_from_ruby(modname, into, names)
+      rb = Kernel
+      rb = modname.sub(/^__ruby__\.?/, '').split('.').inject(rb) do |o, n|
+        o.const_get(n)
+      end
+      names.each do |key, as|
+        value = nil
+        if key =~ /[A-Z]/ && rb.const_defined?(key)
+          value = rb.const_get(key)
+        elsif rb.respond_to?(key)
+          value = rb.method(key)
+          unless value.respond_to?(:invoke)
+            class << value; alias_method :invoke, :call end
+          end
+        else
+          raise "Dont know how to obtain #{key} from ruby object: #{rb.inspect}"
+        end
+
+        into.py_set((as || key).to_sym, value)
       end
     end
 
