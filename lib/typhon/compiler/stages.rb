@@ -3,6 +3,19 @@ require 'typhon/parser'
 require 'typhon/ast'
 
 module Typhon
+
+  class Generator < Rubinius::Generator
+    def push_typhon_env
+      push_cpath_top
+      find_const :Typhon
+      find_const :Environment
+    end
+
+    def py_send(name, arity)
+      send name, arity
+    end
+  end
+
   class Stage
 
 
@@ -23,7 +36,7 @@ module Typhon
         root = @root.new @input
         root.file = @compiler.parser.filename
 
-        @output = Rubinius::Generator.new
+        @output = Typhon::Generator.new
         root.variable_scope = @variable_scope
         root.bytecode @output
 
