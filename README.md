@@ -1,7 +1,11 @@
-Snakes on Rubinius HEAD
+Typhon is twisted Python.  
 ======
 
-  Typhon is a Python implementation for the Rubinius VM.
+
+  <img src="https://raw.github.com/vic/typhon/master/etc/typhon-logo.png" title="Typhon is twisted Python" />
+
+
+  A Python implementation for the Rubinius VM.
 
 Why?
 ----
@@ -147,18 +151,9 @@ TODO/FIXME tags if needed.
 
 ## Logo
 
-We need a logo, but i'm really bad at design stuff, so if you
-have designing skills, I'd been thinking a cool logo for
-Typhon could be a tornado of two or three little Python snakes :)
-
-[@victor_g5](http://twitter.com/victor_g5) has proposed mixing the
-[Python
-logo](http://www.python.org/community/logos/python-logo-generic.svg)
-and [Rubinius
-logo](http://www.flickr.com/photos/veganstraightedge/2917525709/sizes/o/in/photostream/)s
-to come with a nice Typhon logo. [Here's an sketch of
-it](http://imgur.com/qkmlk) so if you like the idea and have designer
-skills, we would like to hear from you.
+The Typhon logo has been kindly contributed by Christoph Grabo.
+The logo is a derived work of the original Python logo and is 
+distributed under a creative common license CC BY-NC-SA 3.0.
 
 ## About Typhon
 
@@ -175,6 +170,7 @@ skills, we would like to hear from you.
 
 ## Contributors
 
+  - Christoph Grabo
   - Graham Batty
   - Victor Hugo Borja <vic.borja@gmail.com>
 
