@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
+
 import imported
-
-print(imported.__doc__)
-
 import foo.bar
 
+
+print(imported.__doc__)

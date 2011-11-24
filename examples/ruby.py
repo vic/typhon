@@ -1,6 +1,8 @@
-from __ruby__ import require
+# -*- coding: utf-8 -*-
 
-require('rbconfig')
+from __ruby__ import require
 from __ruby__.Config.CONFIG import fetch as rb
 
+
+require('rbconfig')
 print rb("RUBY_INSTALL_NAME") # => rbx
