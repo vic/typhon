@@ -172,5 +172,5 @@ distributed under a creative common license CC BY-NC-SA 3.0.
 
   - Christoph Grabo
   - Graham Batty
-  - Victor Hugo Borja <vic.borja@gmail.com>
-
+  - Thiago Avelino
+  - Victor Hugo Borja <vic.borja@gmail.com>  
