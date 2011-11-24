@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 print "boom"
 
 x = 1
-y = 100000*100000 # current parser blows up on long numbers.
+# current parser blows up on long numbers.
+y = 100000*100000 
 z = 10000
 
 #__debugger__()

@@ -1,4 +1,9 @@
-"The Foo::Bar module"
+# -*- coding: utf-8 -*-
+
 def bar():
-  print "BAR"
+    """The Foo::Bar module"""
+
+    print "BAR"
+
+
 bar()
