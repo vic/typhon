@@ -1,2 +1,6 @@
+# -*- coding: utf-8 -*-
+
 import imported as foo
-print(foo.__name__) # => "imported"
+
+# => "imported"
+print(foo.__name__)
