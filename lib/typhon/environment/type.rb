@@ -2,6 +2,7 @@ require 'typhon/environment/python_object'
 
 module Typhon
   module Environment
+    Type = Rubinius::Type
     # We need to do some magic to make these two things refer to each
     # other in the right way. Type is an ObjectBase of type Type, which has
     # several recursive relationships. So we define ObjectBase first,

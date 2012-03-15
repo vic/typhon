@@ -35,7 +35,7 @@ module Typhon
       names = ['line'] + attributes
       attrs = names.map { |a| '@' + a }
 
-      cls.attr_accessor *names
+      cls.send :attr_accessor, *names
       cls.module_eval <<-INIT
         def initialize(#{names.join(', ')})
           #{attrs.join(', ')} = #{names.join(', ')}

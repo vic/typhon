@@ -66,7 +66,7 @@ DOC
         c.py_cache[:derived_exception] = k
 
         # add tell the ruby class what python class it's from.
-        k.metaclass.send(:define_method, :factory) { c }
+        k.singleton_class.send(:define_method, :factory) { c }
 
         ExceptionsModule.py_set(name, c)
         BuiltInModule.py_set(name, c)

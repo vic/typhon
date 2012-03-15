@@ -8,7 +8,7 @@ module Typhon
           if cm
             Rubinius.attach_method(:invoke, cm, scope, self)
           else
-            metaclass.send(:define_method, :invoke, &block)
+            singleton_class.send(:define_method, :invoke, &block)
           end
         end
       end

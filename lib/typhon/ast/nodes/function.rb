@@ -31,6 +31,10 @@ module Typhon
           []
         end
       end
+
+      def post_args
+        0
+      end
     end
 
     class ModuleArguments < Arguments
