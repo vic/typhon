@@ -1,5 +1,5 @@
 #! typhon examples/import.py
 #! python examples/import.py
 imported
-imported module
 BAR
+IMPORTED

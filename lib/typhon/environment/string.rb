@@ -41,7 +41,7 @@ module Typhon
       end
 
       python_method(:__repr__) do |s|
-        "\"#{s.gsub('"', '\"')}\""
+        "\'#{s.gsub('"', '\"')}\'"
       end
     end
 
