@@ -1,0 +1,243 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Typhon</title>
+  <meta name="description" content="Snakes on rbx-head. A Python implementation for the Rubinius VM">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Typhon</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Snakes on rbx-head. A Python implementation for the Rubinius VM</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/vic/typhon/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/vic/typhon/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/vic/typhon" class="code">fork Typhon on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>Typhon is twisted Python.  </h1>
+
+<p><img src="https://raw.github.com/vic/typhon/master/etc/typhon-logo.png" title="Typhon is twisted Python"></p>
+
+<p>A Python implementation for the Rubinius VM.</p>
+
+<h2>Why?</h2>
+
+<p>Just For Fun!.</p>
+
+<p>Python is one of the most popular dynamic languagues out there,
+it has many projects made on it and has an outstanding number of
+libraries available.
+So I guess having an implementation for it on Rubinius would make
+Rubinius an strong player on VM field.</p>
+
+<p>Also, the Rubinius VM is a very neat piece of software, and all
+the cool kids are using it to implement other languages besides
+ruby.</p>
+
+<p>Maybe Rubinius VM does what Parrot was originally intended to.
+( Running many dynamic languages )</p>
+
+<h2>Requirements</h2>
+
+<ul>
+<li>python 2</li>
+<li>rubinius head</li>
+<li>rake</li>
+</ul><h2>Try it</h2>
+
+<pre><code> # Set rubinius as your current ruby.
+ $ rvm use rbx
+
+ # Get usage help
+ $ ./bin/typhon --help
+
+ # Run the hello world example
+ $ ./bin/typhon examples/hello.py
+
+ # If you want to run all the specs
+ $ rake spec
+
+ # Try -C --print-all on your python script.
+ # This will most likely blow up and show you
+ # a hint of what is needed to be implemented.
+ $ ./bin/typhon -C --print-all your_script.py
+
+ # You can use the --print-all switches with
+ # the REPL like this:
+ $ ./bin/typhon --print-all
+</code></pre>
+
+<h2>Status</h2>
+
+<p>We have many simple python programs in the examples/ directory
+  that run successfully. Of course there might be a lot of things
+  missing, but that's were we need your help. Add an example, report
+  an issue, or even better, submit a patch or pull request.</p>
+
+<h2>Roadmap</h2>
+
+<p>Here's the plan as its currently in my head:</p>
+
+<ul>
+<li>Have a script to use Python compiler module and let it
+produce a sexp made of Ruby literals.</li>
+</ul><p>DONE.</p>
+
+<p>bin/pyparse.py takes a Python script and outputs the AST as
+  an array of ruby literals. The table of nodes and its attributes
+  are read from bin/node.py. The output is just a sexp.</p>
+
+<ul>
+<li>Read this sexp from Ruby and build an AST in Ruby land.</li>
+</ul><p>DONE.</p>
+
+<p>rbx/ast/node.rb Typhon::AST.from_sexp takes the sexp and just
+  creates a tree of Python AST nodes in Ruby land. The table of
+  nodes is the same pyparse.py uses, bin/node.py</p>
+
+<ul>
+<li>Write the Typhon compiler in Ruby, taking advantage of
+Rubinius' compiler infrastructure.</li>
+</ul><p>DONE.</p>
+
+<p>We have Rubinius compiler stages at rbx/compiler/stages.rb
+  Currently the parsing stage simply uses pyparse.py and
+  evals the resulting sexp to later convert it to actual AST
+  node instances.</p>
+
+<ul>
+<li>Have the Typhon compiler produce Rubinius bytecode.</li>
+</ul><p>IN PROGRESS.</p>
+
+<p>We add bytecode methods to AST nodes as they are being used.</p>
+
+<ul>
+<li>Lots of tests.</li>
+</ul><p>IN PROGRESS.</p>
+
+<p>Currently we use the scripts from examples/ directory to test
+  that <code>typhon</code> and <code>python</code> programs produce the same output.</p>
+
+<p>Try running the example specs with</p>
+
+<pre><code>$ mspec spec/examples_spec.rb
+</code></pre>
+
+<p>Of course we need more specs without having to rely on stdout
+  output. We're into it. Anyways ensuring all the files under
+  examples/ work is always a good-thing(tm).</p>
+
+<ul>
+<li><p>Investigate if the pypy project has a Python parser in Python,
+if so, we could use that once we compile python programs
+to replace the bin/pyparse.py script.</p></li>
+<li><p>Bootstrap. write the Typhon compiler in Python.</p></li>
+</ul><h2>Contributing</h2>
+
+<p>Main repository is located at <a href="http://github.com/vic/typhon">http://github.com/vic/typhon</a>
+report any issues you find there.</p>
+
+<p>The Typhon developers hang out in the
+<a>#typhon-rbx</a> IRC channel on
+<a href="http://webchat.freenode.net?nick=snake%23%23%23%23&amp;channels=typhon-rbx">freenode</a>
+network.
+If more people gets interested we might start a mailing-list.</p>
+
+<p>Typhon is on its early days, if you want to help, you're more than welcome.
+We follow the same commit bit policy than Rubinius and Pugs, if you get your first patch
+accepted you get commit bit.</p>
+
+<h2>Coding conventions.</h2>
+
+<p>Set your editor to use soft-tabs at two spaces for ruby code, no
+hard-tabs for python code.
+Configure your editor to automatically remove trailing whitespace and
+be sure to leave an empty new-line at the end of file.</p>
+
+<p>Try keep source code as readable as possible, that is, use proper
+indentation, an empty new-line between method definitions, skip parens in ruby
+where it makes sense (most if expressions), add source comments with
+links to python design/algorithm documents if applicable, add
+TODO/FIXME tags if needed.</p>
+
+<h2>Logo</h2>
+
+<p>The Typhon logo has been kindly contributed by Christoph Grabo.
+The logo is a derived work of the original Python logo and is 
+distributed under a creative common license CC BY-NC-SA 3.0.</p>
+
+<h2>About Typhon</h2>
+
+<p>The name was chosen as an anagram of Python.</p>
+
+<p>In greek mithology, <a href="http://felc.gdufs.edu.cn/jth/myth/Greek%20Online/Typhon.htm">Typhon</a> is one of the largest and most fearsome of all creatures.</p>
+
+<p>Theres a cool t-shirt showing what Typhon is all about:
+  <a href="http://twinsrpnt.com/blog/?p=180">snakes on rbx-head</a></p>
+
+<h2>License</h2>
+
+<p>Modified BSD License. See LICENSE file.</p>
+
+<h2>Contributors</h2>
+
+<ul>
+<li>Christoph Grabo</li>
+<li>Graham Batty</li>
+<li>Thiago Avelino</li>
+<li>Victor Hugo Borja <a href="mailto:vic.borja@gmail.com">vic.borja@gmail.com</a><br>
+</li>
+</ul>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/vic" class="avatar"><img src="https://secure.gravatar.com/avatar/29a49b5e2e2766517dc05bfff287037b?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/vic">vic</a> maintains <a href="https://github.com/vic/typhon">Typhon</a></p>
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/vic/typhon/tarball/master" class="tar">tar</a><a href="https://github.com/vic/typhon/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-30488676-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+</body>
+</html>
