@@ -1,4 +1,4 @@
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 task :default => :spec
 
@@ -45,4 +45,4 @@ EOS
   s.add_dependency 'mspec', '~> 1.5.0'
 end
 
-Rake::GemPackageTask.new(spec){ |pkg| pkg.gem_spec = spec }
+Gem::PackageTask.new(spec){ |pkg| pkg.gem_spec = spec }
