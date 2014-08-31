@@ -36,7 +36,7 @@ module Typhon
         when Node, ClosedScope
           g.push_self
           g.send(:py_from_module, 0)
-        else # something else, like Rubinius::AST::EvalNode
+        else # something else, like Rubinius::ToolSets::Runtime::AST::EvalNode
           g.push_const(:Typhon)
           g.find_const(:Environment)
           g.send(:get_python_module, 0)
