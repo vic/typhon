@@ -55,7 +55,7 @@ DOC
 
       def self.make_exception(name, base, doc)
         class_name = :"#{name}Class"
-        base_class_name = "#{base.__name__}Class".gsub('Typhon::Environment::', '')
+        base_class_name = "#{base.name}Class".gsub('Typhon::Environment::', '')
         m = Typhon::Environment
 
         # create the ruby class

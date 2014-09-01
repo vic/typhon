@@ -21,18 +21,16 @@ module Typhon
     def self.execute_code(code, binding, from_module, print = Compiler::Print.new)
       cm = pythonize_literals(Compiler.compile_for_eval(code, binding.variables,
                                                         "(eval)", 1, print))
-      cm.scope = binding.static_scope.dup
+      cm.scope = binding.constant_scope.dup
       cm.name = :__eval__
 
       script = Rubinius::CompiledMethod::Script.new(cm, "(eval)", true)
-      script.eval_binding = binding
       script.eval_source = code
 
       cm.scope.script = script
 
       be = Rubinius::BlockEnvironment.new
       be.under_context(binding.variables, cm)
-      be.from_eval!
       be.call
     end
 
