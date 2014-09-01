@@ -1,5 +1,6 @@
 # vim: filetype=ruby
-require 'spec/custom'
+
+require_relative 'custom'
 
 class MSpecScript
   set :target, 'rbx'

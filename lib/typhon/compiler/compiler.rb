@@ -1,6 +1,6 @@
 module Typhon
 
-  class Compiler < Rubinius::Compiler
+  class Compiler < Rubinius::ToolSets::Runtime::Compiler
 
     def self.compiled_filename(filename)
       if filename =~ /.py$/
@@ -32,7 +32,7 @@ module Typhon
 
       parser.input file
 
-      compiler.generator.root = Rubinius::AST::Script
+      compiler.generator.root = Rubinius::ToolSets::Runtime::AST::Script
       compiler.writer.name = output || compiled_filename(file)
 
       parser.print = print
@@ -50,7 +50,7 @@ module Typhon
       parser = compiler.parser
 
       parser.input code, file, line
-      compiler.generator.root = Rubinius::AST::EvalExpression
+      compiler.generator.root = Rubinius::ToolSets::Runtime::AST::EvalExpression
       compiler.generator.variable_scope = variable_scope
 
       parser.print = print

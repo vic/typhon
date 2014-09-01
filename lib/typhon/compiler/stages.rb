@@ -4,7 +4,7 @@ require 'typhon/ast'
 
 module Typhon
 
-  class Generator < Rubinius::Generator
+  class Generator < Rubinius::ToolSets::Runtime::Generator
     def push_typhon_env
       push_cpath_top
       find_const :Typhon
@@ -21,8 +21,8 @@ module Typhon
 
     # This stage takes a tree of Typhon::AST nodes and
     # simply calls the bytecode method on them.
-    class Generator < Rubinius::Compiler::Stage
-      next_stage Rubinius::Compiler::Encoder
+    class Generator < Rubinius::ToolSets::Runtime::Compiler::Stage
+      next_stage Rubinius::ToolSets::Runtime::Compiler::Encoder
       attr_accessor :variable_scope, :root
 
       def initialize(compiler, last)
@@ -56,7 +56,7 @@ module Typhon
     #
     # If the source is not being compiled for eval, then output is
     # the same AST given as input.
-    class EvalExpr < Rubinius::Compiler::Stage
+    class EvalExpr < Rubinius::ToolSets::Runtime::Compiler::Stage
       next_stage Generator
 
       def initialize(compiler, last)
@@ -66,7 +66,7 @@ module Typhon
 
       def run
         @output = @input
-        if @compiler.generator.root == Rubinius::AST::EvalExpression
+        if @compiler.generator.root == Rubinius::ToolSets::Runtime::AST::EvalExpression
           @output = @output.node # drop top module node, only use stmt
           if @output.nodes.last.kind_of?(AST::DiscardNode)
             @output.nodes[-1] = @output.nodes.last.expr
@@ -78,7 +78,7 @@ module Typhon
 
     # This stage takes a ruby array as produced by bin/astpretty.py
     # and produces a tree of Typhon::AST nodes.
-    class PyAST < Rubinius::Compiler::Stage
+    class PyAST < Rubinius::ToolSets::Runtime::Compiler::Stage
       next_stage EvalExpr
 
       def initialize(compiler, last)
@@ -97,7 +97,7 @@ module Typhon
     # containing representation of the python source.
     # We are currently using python's own parser, so we just
     # read the sexp as its printed by bin/astpretty.py
-    class PyCode < Rubinius::Compiler::Stage
+    class PyCode < Rubinius::ToolSets::Runtime::Compiler::Stage
 
       stage :typhon_code
       next_stage PyAST
@@ -127,7 +127,7 @@ module Typhon
     # containing representation of the python source.
     # We are currently using python's own parser, so we just
     # read the sexp as its printed by bin/astpretty.py
-    class PyFile < Rubinius::Compiler::Stage
+    class PyFile < Rubinius::ToolSets::Runtime::Compiler::Stage
 
       stage :typhon_file
       next_stage PyAST

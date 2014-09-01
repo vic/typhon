@@ -43,9 +43,9 @@ module Typhon
       INIT
     end
 
-    class Node < Rubinius::AST::Node
+    class Node < Rubinius::ToolSets::Runtime::AST::Node
     end
-    class ClosedScope < Rubinius::AST::ClosedScope
+    class ClosedScope < Rubinius::ToolSets::Runtime::AST::ClosedScope
     end
 
     class BlowUpNode < Node

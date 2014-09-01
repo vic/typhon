@@ -20,6 +20,25 @@ module Typhon
         nil
       end
 
+      def block_index
+        nil
+      end
+
+      def keywords
+        nil
+      end
+
+      def arity
+        arity = required_args
+
+        if @defaults.length != 0
+          arity += 1
+          arity = -arity
+        end
+
+        arity
+      end
+
       def required_names
         @argnames[0..@argnames.count-@defaults.count]
       end

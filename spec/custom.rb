@@ -1,4 +1,4 @@
-require 'spec/custom/runner/relates'
-require 'spec/custom/matchers/parse_as'
-require 'spec/custom/utils/options'
-require 'spec/custom/utils/script'
+require_relative 'custom/runner/relates'
+require_relative 'custom/matchers/parse_as'
+require_relative 'custom/utils/options'
+require_relative 'custom/utils/script'
