@@ -172,5 +172,6 @@ distributed under a creative common license CC BY-NC-SA 3.0.
 
   - Christoph Grabo
   - Graham Batty
+  - Joe Eli McIlvain
   - Thiago Avelino
   - Victor Hugo Borja <vic.borja@gmail.com>  
